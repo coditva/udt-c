@@ -1,7 +1,7 @@
 TARGET			= libudt.so
 CC 				= gcc
 CC_FLAGS 		= -Wall -pedantic -shared -fPIC
-OBJS			= accept.o socket.o bind.o close.o
+OBJS			= socket.o bind.o close.o connect.o io.o
 
 $(TARGET): 		$(OBJS)
 				$(CC) $(CC_FLAGS) $(OBJS) -o $@

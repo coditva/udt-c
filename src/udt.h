@@ -3,25 +3,13 @@
 
 #include <sys/types.h>
 #include <arpa/inet.h>
+#include <errno.h>
 
 typedef int socket_t;
 typedef int af_type;
 typedef int sock_type;
 
 typedef struct sockaddr sockaddr_t;
-
-int errno;
-
-/**
- * Accept a new connection on a listening socket and return its file
- * descriptor.
- *
- * @param   socket_t    A listening socket
- * @param   sockaddr_t* This will be filled with the address of accepted socket
- * @param   int*        This will be set to the length of sockaddr
- * @return  socket_t    Socket file descriptor if success, -1 otherwise.
- */
-socket_t    udt_accept  (socket_t, sockaddr_t *, int *);
 
 /**
  * Bind the socket to the given address.
@@ -60,7 +48,28 @@ int         udt_startup ();
  */
 socket_t    udt_socket  (af_type, sock_type, int);
 
+/**
+ * Receive data from a socket
+ *
+ * @param   socket_t    The socket to receive from
+ * @param   char*       Pointer to a preallocated memory buffer
+ * @param   int         Maximum length of the buffer
+ * @param   flags       Flags
+ * @return  int         Size of the message
+ */
 int         udt_recv    (socket_t, char *, int, int);
+
+/**
+ * Send data to a socket
+ *
+ * @param   socket_t    The socket to send to
+ * @param   char*       The string to send
+ * @param   int         Length of the message
+ * @param   flags       Flags
+ * @return  int         Size of the message
+ */
+int         udt_send    (socket_t, char *, int, int);
+
 /*int64_t     udt_sendfile(socker_t, fstream&, const int64_t, const int64_t,*/
                          /*const int);*/
 /*int64_t     udt_recvfile(socker_t, fstream&, const int64_t, const int64_t,*/
