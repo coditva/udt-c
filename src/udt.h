@@ -34,8 +34,23 @@ socket_t    udt_accept  (socket_t, sockaddr_t *, int *);
  */
 int         udt_bind    (socket_t, sockaddr_t *, int);
 
+/**
+ * Close the socket.
+ *
+ * @param   socket_t    Socket to close
+ * @return  int         0 on success, -1 otherwise
+ */
 int         udt_close   (socket_t);
+
+/**
+ * Connect to the server at the given address
+ *
+ * @param   socker_t    A socket created with udt_socket()
+ * @param   sockaddr_t* The address of the server
+ * @param   int*        The length of sockaddress
+ */
 int         udt_connect (socket_t, const sockaddr_t *, int *);
+
 int         udt_startup ();
 
 /**
