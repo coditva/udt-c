@@ -12,4 +12,4 @@ clean			:
 				rm -f *.o $(OBJS) $(TARGETS)
 
 $(OBJS):%.o		: %.c Makefile
-				$(CC) $(CC_FLAGS) -I. $< -c
+				$(CC) $(CC_FLAGS) -I../src $< -c
