@@ -8,7 +8,7 @@ typedef int socket_t;
 typedef int af_type;
 typedef int sock_type;
 
-typedef struct sockaddr_in sockaddr_t;
+typedef struct sockaddr sockaddr_t;
 
 int errno;
 
