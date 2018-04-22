@@ -1,3 +1,8 @@
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <errno.h>
+
 #include "udt.h"
 
 socket_t udt_socket(af_type af, sock_type type, int protocol)

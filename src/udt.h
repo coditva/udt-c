@@ -2,9 +2,7 @@
 #define UDT_H_JDNRQTZQ
 
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <arpa/inet.h>
-#include <errno.h>
 
 typedef int socket_t;
 typedef int af_type;
@@ -47,9 +45,9 @@ int         udt_close   (socket_t);
  *
  * @param   socker_t    A socket created with udt_socket()
  * @param   sockaddr_t* The address of the server
- * @param   int*        The length of sockaddress
+ * @param   int         The length of sockaddress
  */
-int         udt_connect (socket_t, const sockaddr_t *, int *);
+int         udt_connect (socket_t, const sockaddr_t *, int);
 
 int         udt_startup ();
 
