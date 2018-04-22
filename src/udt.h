@@ -10,7 +10,7 @@ typedef int socket_t;
 typedef int af_type;
 typedef int sock_type;
 
-typedef struct sockaddr sockaddr_t;
+typedef struct sockaddr_in sockaddr_t;
 
 int errno;
 
@@ -25,7 +25,15 @@ int errno;
  */
 socket_t    udt_accept  (socket_t, sockaddr_t *, int *);
 
-int         udt_bind    (socket_t, sockaddr_t *, int *);
+/**
+ * Bind the socket to the given address.
+ *
+ * @param   socket_t    A socket created with udt_socket()
+ * @param   sockaddr_t* The address to bind to
+ * @param   int         The length of the address
+ */
+int         udt_bind    (socket_t, sockaddr_t *, int);
+
 int         udt_close   (socket_t);
 int         udt_connect (socket_t, const sockaddr_t *, int *);
 int         udt_startup ();
