@@ -1,12 +1,13 @@
 CC 				= gcc
 CC_FLAGS 		= -Wall -pedantic
+CL_FLAGS		= -L../src -ludt
 OBJS			= server.o client.o
 TARGETS			= server client
 
 all				: $(TARGETS)
 
 $(TARGETS):%	: %.o
-				$(CC) $(CC_FLAGS) -I. $< -o $@
+				$(CC) $(CC_FLAGS) -I. $< -o $@ $(CL_FLAGS)
 
 clean			:
 				rm -f *.o $(OBJS) $(TARGETS)

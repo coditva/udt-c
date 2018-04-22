@@ -1,10 +1,10 @@
 TARGET			= libudt.so
 CC 				= gcc
-CC_FLAGS 		= -Wall -pedantic -shared
-OBJS			= accept.o
+CC_FLAGS 		= -Wall -pedantic -shared -fPIC
+OBJS			= accept.o socket.o
 
 $(TARGET): 		$(OBJS)
-				$(CC) $(CC_FLAGS) $< -o $@
+				$(CC) $(CC_FLAGS) $(OBJS) -o $@
 
 clean:
 				rm -f *.o $(OBJS) $(TARGET)
