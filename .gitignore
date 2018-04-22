@@ -31,6 +31,8 @@
 *.out
 *.app
 test/run_tests
+progs/server
+progs/client
 
 # Temporary things
 temp/

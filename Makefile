@@ -1,18 +1,13 @@
-CC 				= gcc
+CC 				= g++
 CC_FLAGS 		= -Wall -pedantic
-SRC_DIR 	 	= src
 
-INCLUDE_DIR 	= include
-SRCS			= main.c
-OBJS 			= $(SRCS:c=o)
+.PHONY			: all
 
+all				:
+				$(MAKE) --directory src
+				$(MAKE) --directory progs
 
-.PHONY: 		all
-
-all: 			$(OBJS)
-
-clean:
+clean			:
+				$(MAKE) --directory src clean
+				$(MAKE) --directory progs clean
 				rm -f *.o $(OBJS)
-
-$(OBJS):%.o:	$(SRC_DIR)/%.c $(INCLUDE_DIR)/%.h Makefile
-				$(CC) $(CC_FLAGS) -I$(INCLUDE_DIR) -c $<
