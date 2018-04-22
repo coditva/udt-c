@@ -23,7 +23,10 @@ int main(int argc, char *argv[])
     addr.sin_family = AF_INET;
     addr.sin_port   = PORT;
     inet_pton(addr.sin_family, HOST, &(addr.sin_addr));
-    connect(sock, (struct sockaddr *)&addr, sizeof(addr));
+    if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
+        fprintf(stderr, "Could not connect to socket\n");
+        exit(errno);
+    }
 
     /* send, recv */
 
