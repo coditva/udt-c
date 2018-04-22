@@ -1,7 +1,7 @@
 TARGET			= libudt.so
 CC 				= gcc
-CC_FLAGS 		= -Wall -pedantic
-OBJS			= main.o
+CC_FLAGS 		= -Wall -pedantic -shared
+OBJS			= accept.o
 
 $(TARGET): 		$(OBJS)
 				$(CC) $(CC_FLAGS) $< -o $@
