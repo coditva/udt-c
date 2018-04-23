@@ -42,6 +42,8 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Connected\n");
     }
 
+    freeaddrinfo(result);
+
     /* send, recv */
     char buffer[1025];
     while (send(sock, buffer, 1024, 0)) {

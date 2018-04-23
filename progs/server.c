@@ -2,7 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <netdb.h>
+
 #include "../src/udt.h"
+#include "../src/packet.h"
+#include "../src/state.h"
 
 #define BACKLOG 5
 #define HOST "127.0.0.1"
@@ -38,14 +41,25 @@ int main(int argc, char *argv[])
     if (udt_bind(sock, result -> ai_addr, result -> ai_addrlen) == -1) {
         fprintf(stderr, "Could not bind socket\n");
         exit(errno);
+    } else {
+        fprintf(stdout, "Active on %d\n", PORT);
+    }
+
+    freeaddrinfo(result);
+
+    /* send, recv packets */
+    packet_t packet;
+    state_t  state;
+    while (recv(sock, &packet, sizeof(packet_t), 0)) {
+        packet_deserialize(&packet);
+        state.packet = packet;
+        state_enter(state);
+
+        memset(&packet, 0, sizeof(packet));
+        memset(&state, 0, sizeof(state_t));
     }
 
     /* send, recv */
-    char buffer[1025];
-    while (recv(sock, buffer, 1024, 0)) {
-        fprintf(stderr, "%s", buffer);
-        memset(buffer, 0, sizeof(buffer));
-    }
 
     /* close connection */
     if (udt_close(sock) == -1) {

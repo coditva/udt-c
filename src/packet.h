@@ -24,21 +24,24 @@
  */
 typedef struct {
     union {
-        int32_t sequence_number;
+        uint32_t sequence_number;
         struct {
-            int16_t type;
-            int16_t ext_type;
+            uint16_t type;
+            uint16_t ext_type;
         };
+        uint32_t _head0;
     };
     union {
-        int32_t message_number;
-        int32_t ack_sequence_number;
+        uint32_t message_number;
+        uint32_t ack_sequence_number;
+        uint32_t _head1;
     };
-    int32_t timestamp;
+    union {
+        uint32_t timestamp;
+        uint32_t _head2;
+    };
 } packet_t;
 
-
-/* Functions to extract various packet params */
 
 int     packet_is_control   (packet_t);
 int     packet_is_data      (packet_t);
@@ -48,5 +51,13 @@ int16_t packet_get_ext_type (packet_t);
 int32_t packet_get_msg_num  (packet_t);
 int32_t packet_get_ack_seq  (packet_t);
 int32_t packet_get_timestamp(packet_t);
+
+/* Convert packet to/from network layer */
+void    packet_serialize    (packet_t *);
+void    packet_deserialize  (packet_t *);
+
+
+#define PACKET_TYPE_MASK 0x80000000     /* 32nd bit */
+#define PACKET_SEQ_MASK  0x7FFFFFFF     /* 32nd bit */
 
 #endif /* end of include guard: PACKET_H_R7ONXCYA */
