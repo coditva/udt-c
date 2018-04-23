@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include "udt.h"
 #include "state.h"
 #include "packet.h"
 
@@ -7,8 +8,8 @@ void state_handshake(state_t *);
 
 void state_enter(state_t state) {
 
-    if (packet_is_control(state.packet)) {
-        switch (packet_get_seq(state.packet)) {
+    if (packet_is_control(state.req_packet)) {
+        switch (packet_get_seq(state.req_packet)) {
 
             /* handshake */
             case 0:
@@ -72,5 +73,11 @@ void state_enter(state_t state) {
 
 void state_handshake(state_t *state)
 {
+    packet_t packet;
+    packet._head0 = 0x00000080;
+    packet.data[0] = 0x04000000;
+    packet.data[1] = 0x01000000;
+
+    state -> res_packet = packet;
     state -> retval = 0;
 }
