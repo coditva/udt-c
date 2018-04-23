@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "udt.h"
 #include "packet.h"
 #include "state.h"
@@ -9,19 +11,17 @@ int udt_recv(socket_t sock, char *buffer, int len, int flags)
 
     while (1) {
         recv(sock, &packet, sizeof(packet_t), flags);
+        send(sock, &packet, sizeof(packet), flags);
 
         packet_deserialize(&packet);
 
         state.packet = packet;
         state.retval = 0;
         state_enter(state);
-
-        if (state.retval == 0) {
-            return 0;
-        }
+        memset(&packet, 0, sizeof(packet_t));
     }
 
-    return 0;
+    return 1;
 }
 
 int udt_send(socket_t sock, char *buffer, int len, int flags)

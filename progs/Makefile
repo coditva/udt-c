@@ -1,6 +1,6 @@
 CC 				= gcc
 CC_FLAGS 		= -Wall -pedantic
-CL_FLAGS		= -L../src -ludt
+CL_FLAGS		= -L../src -ludt-c
 OBJS			= server.o client.o
 TARGETS			= server client
 

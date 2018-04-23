@@ -72,6 +72,5 @@ void state_enter(state_t state) {
 
 void state_handshake(state_t *state)
 {
-    fprintf(stderr, "Hand shaken\n");
-    state -> retval = 1;
+    state -> retval = 0;
 }

@@ -1,4 +1,4 @@
-TARGET			= libudt.so
+TARGET			= libudt-c.so
 CC 				= gcc
 CC_FLAGS 		= -Wall -pedantic -shared -fPIC
 OBJS			= socket.o \

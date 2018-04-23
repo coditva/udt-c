@@ -3,6 +3,7 @@
 
 #include <inttypes.h>
 
+#define MAX_DATA_SIZE 20
 
 /**
  * The udt packet structure
@@ -23,22 +24,33 @@
  *   time_stamp
  */
 typedef struct {
-    union {
-        uint32_t sequence_number;
-        struct {
-            uint16_t type;
-            uint16_t ext_type;
+    struct {
+
+        /* header */
+        union {
+            uint32_t sequence_number;
+            struct {
+                uint16_t type;
+                uint16_t ext_type;
+            };
+            uint32_t _head0;
         };
-        uint32_t _head0;
-    };
-    union {
-        uint32_t message_number;
-        uint32_t ack_sequence_number;
-        uint32_t _head1;
-    };
-    union {
-        uint32_t timestamp;
-        uint32_t _head2;
+        union {
+            uint32_t message_number;
+            uint32_t ack_sequence_number;
+            uint32_t _head1;
+        };
+        union {
+            uint32_t timestamp;
+            uint32_t _head2;
+        };
+        union {
+            uint32_t id;
+            uint32_t _head3;
+        };
+
+        /* data */
+        uint32_t data[MAX_DATA_SIZE];
     };
 } packet_t;
 
