@@ -7,13 +7,14 @@
 #include "../src/packet.h"
 #include "../src/state.h"
 
-#define BACKLOG 5
-#define HOST "127.0.0.1"
-#define PORT 9000
+#define BACKLOG     5
+#define HOST        "127.0.0.1"
+#define PORT        9000
+#define BUFFER_SIZE 1000
 
 int main(int argc, char *argv[])
 {
-    socket_t        sock;
+    socket_t        sock, conn;
     int             err;
     struct addrinfo hints, *result;
 
@@ -47,19 +48,27 @@ int main(int argc, char *argv[])
 
     freeaddrinfo(result);
 
-    /* send, recv packets */
-    packet_t packet;
-    state_t  state;
-    while (recv(sock, &packet, sizeof(packet_t), 0)) {
-        packet_deserialize(&packet);
-        state.packet = packet;
-        state_enter(state);
+    /* listen for connections */
+    if (udt_listen(sock, BACKLOG) == -1) {
+        fprintf(stderr, "Could not listen on socket\n");
+        exit(errno);
+    } else {
+        fprintf(stdout, "Listening on %d\n", PORT);
+    }
 
-        memset(&packet, 0, sizeof(packet));
-        memset(&state, 0, sizeof(state_t));
+    /* get a connection */
+    if ((conn = udt_accept(sock, NULL, NULL)) == -1) {
+        fprintf(stderr, "Connection failed\n");
+        exit(errno);
+    } else {
+        fprintf(stdout, "New connection\n");
     }
 
     /* send, recv */
+    char buffer[BUFFER_SIZE];
+    while (udt_recv(conn, buffer, sizeof(buffer), 0)) {
+        memset(buffer, 0, sizeof(buffer));
+    }
 
     /* close connection */
     if (udt_close(sock) == -1) {

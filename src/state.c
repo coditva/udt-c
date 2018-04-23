@@ -3,6 +3,8 @@
 #include "state.h"
 #include "packet.h"
 
+void state_handshake(state_t *);
+
 void state_enter(state_t state) {
 
     if (packet_is_control(state.packet)) {
@@ -11,6 +13,7 @@ void state_enter(state_t state) {
             /* handshake */
             case 0:
                 fprintf(stderr, "log: Handshake packet received\n");
+                state.execute = state_handshake;
                 break;
 
             /* keep-alive */
@@ -58,4 +61,14 @@ void state_enter(state_t state) {
         }
     }
 
+    state.execute(&state);
+    if (state.retval == 1) {
+        fprintf(stderr, "Error!\n");
+    }
+}
+
+void state_handshake(state_t *state)
+{
+    fprintf(stderr, "Hand shaken\n");
+    state -> retval = 1;
 }

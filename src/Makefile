@@ -5,6 +5,8 @@ OBJS			= socket.o \
 				  bind.o \
 				  close.o \
 				  connect.o \
+				  listen.o \
+				  accept.o \
 				  io.o \
 				  packet.o \
 				  state.o

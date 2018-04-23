@@ -3,9 +3,14 @@
 
 #include "packet.h"
 
-typedef struct {
+typedef struct _state state_t;
+typedef void (*state_execute_t) (state_t *);
+
+struct _state{
     packet_t packet;
-} state_t;
+    state_execute_t execute;
+    int retval;
+};
 
 void state_enter(state_t);
 

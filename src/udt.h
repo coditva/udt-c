@@ -11,12 +11,30 @@ typedef int sock_type;
 
 typedef struct sockaddr sockaddr_t;
 
+
+/**
+ * Initialize the udt sockets
+ *
+ * @return  int         0 on success, -1 otherwise
+ */
+int         udt_startup ();
+
+/**
+ * Creates a new socket and returns it, if successful. If failed, return -1.
+ *
+ * @param   af_type     The type of internet family
+ * @param   sock_type   The socket type
+ * @return  socket_t    Socket file descriptor if success. -1 otherwise.
+ */
+socket_t    udt_socket  (af_type, sock_type, int);
+
 /**
  * Bind the socket to the given address.
  *
  * @param   socket_t    A socket created with udt_socket()
  * @param   sockaddr_t* The address to bind to
  * @param   int         The length of the address
+ * @return  int         0 on success, -1 otherwise
  */
 int         udt_bind    (socket_t, sockaddr_t *, int);
 
@@ -34,19 +52,28 @@ int         udt_close   (socket_t);
  * @param   socker_t    A socket created with udt_socket()
  * @param   sockaddr_t* The address of the server
  * @param   int         The length of sockaddress
+ * @return  int         0 on success, -1 otherwise
  */
 int         udt_connect (socket_t, const sockaddr_t *, int);
 
-int         udt_startup ();
+/**
+ * Listen on the given socket for given number of connections
+ *
+ * @param   socker_t    A socket created with udt_socket()
+ * @param   int         The maximum number of connections for the socket
+ * @return  int         0 on success, -1 otherwise
+ */
+int         udt_listen  (socket_t, int);
 
 /**
- * Creates a new socket and returns it, if successful. If failed, return -1.
+ * Get a connection on the given socket
  *
- * @param   af_type     The type of internet family
- * @param   sock_type   The socket type
- * @return  socket_t    Socket file descriptor if success. -1 otherwise.
+ * @param   socker_t    A socket listening for connections
+ * @param   sockaddr_t* The address of the connection
+ * @param   int*        The length of sockaddress
+ * @return  int         0 on success, -1 otherwise
  */
-socket_t    udt_socket  (af_type, sock_type, int);
+int         udt_accept  (socket_t, sockaddr_t *, int *);
 
 /**
  * Receive data from a socket
