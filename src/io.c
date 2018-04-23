@@ -11,9 +11,7 @@ int udt_recv(socket_t sock, char *buffer, int len, int flags)
 
     while (1) {
         recv(sock, &packet, sizeof(packet_t), flags);
-        send(sock, &packet, sizeof(packet), flags);
-
-        packet_deserialize(&packet);
+        packet_deserialize(&packet, sizeof(packet_t));
 
         state.packet = packet;
         state.retval = 0;

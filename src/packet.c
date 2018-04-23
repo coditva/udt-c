@@ -17,9 +17,22 @@ int32_t packet_get_seq (packet_t packet)
     return (packet.sequence_number & PACKET_SEQ_MASK);
 }
 
-void packet_deserialize(packet_t *packet)
+void packet_deserialize(packet_t *packet, int len)
 {
-    packet -> _head0 = ntohl(packet -> _head0);
-    packet -> _head1 = ntohl(packet -> _head1);
-    packet -> _head2 = ntohl(packet -> _head2);
+    uint32_t *block = &(packet -> _head0);
+    while (len > 0) {
+        *block = ntohl(*block);
+        block++;
+        len -= 8;
+    }
+}
+
+void packet_serialize(packet_t *packet, int len)
+{
+    uint32_t *block = &(packet -> _head0);
+    while (len > 0) {
+        *block = htonl(*block);
+        block++;
+        len -= 8;
+    }
 }

@@ -65,8 +65,8 @@ int32_t packet_get_ack_seq  (packet_t);
 int32_t packet_get_timestamp(packet_t);
 
 /* Convert packet to/from network layer */
-void    packet_serialize    (packet_t *);
-void    packet_deserialize  (packet_t *);
+void    packet_serialize    (packet_t *, int);
+void    packet_deserialize  (packet_t *, int);
 
 
 #define PACKET_TYPE_MASK 0x80000000     /* 32nd bit */
