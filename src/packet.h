@@ -55,18 +55,23 @@ typedef struct {
 } packet_t;
 
 
-int     packet_is_control   (packet_t);
-int     packet_is_data      (packet_t);
-int32_t packet_get_seq      (packet_t);
-int16_t packet_get_type     (packet_t);
-int16_t packet_get_ext_type (packet_t);
-int32_t packet_get_msg_num  (packet_t);
-int32_t packet_get_ack_seq  (packet_t);
-int32_t packet_get_timestamp(packet_t);
+/* Extract packet data */
+int         packet_is_control       (packet_t);
+int         packet_is_data          (packet_t);
+int32_t     packet_get_seq          (packet_t);
+int16_t     packet_get_type         (packet_t);
+int16_t     packet_get_ext_type     (packet_t);
+int32_t     packet_get_msg_num      (packet_t);
+int32_t     packet_get_ack_seq      (packet_t);
+int32_t     packet_get_timestamp    (packet_t);
 
 /* Convert packet to/from network layer */
-void    packet_serialize    (packet_t *, int);
-void    packet_deserialize  (packet_t *, int);
+void        packet_serialize        (packet_t *, int);
+void        packet_deserialize      (packet_t *, int);
+
+/* Packet creation/deletion */
+packet_t*   packet_new              (char *, int); 
+void        packet_delete           (packet_t); 
 
 
 #define PACKET_TYPE_MASK 0x80000000     /* 32nd bit */

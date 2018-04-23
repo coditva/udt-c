@@ -1,4 +1,7 @@
 #include <arpa/inet.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include "packet.h"
 
 int packet_is_data(packet_t packet)
@@ -35,4 +38,29 @@ void packet_serialize(packet_t *packet, int len)
         block++;
         len -= 8;
     }
+}
+
+packet_t * packet_new(char *buffer, int len)
+{
+    uint32_t *block = NULL;
+    int i = 0;
+    packet_t *packet = NULL;
+
+    if (len > MAX_DATA_SIZE * 8) {
+        return NULL;
+    }
+
+    packet = (packet_t *) malloc(sizeof(packet_t));
+    if (packet == NULL) return NULL;
+
+    memset(packet, 0, sizeof(packet_t));
+
+    block = (uint32_t *) buffer;
+    while (len >= 0) {
+        sscanf((char *)block, "%u", &(packet -> data[i]));
+        i++;
+        len -= 8;
+    }
+
+    return packet;
 }
