@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
     /* send, recv */
     char buffer[BUFFER_SIZE];
-    while (udt_recv(conn, buffer, sizeof(buffer), 0)) {
+    while (udt_recv(conn, buffer, BUFFER_SIZE, 0)) {
         memset(buffer, 0, sizeof(buffer));
     }
 

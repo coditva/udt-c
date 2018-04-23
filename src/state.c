@@ -59,6 +59,9 @@ void state_enter(state_t state) {
             default:
                 fprintf(stderr, "log: Unknown packet receiced\n");
         }
+    } else {
+        state.retval = -1;
+        return;
     }
 
     state.execute(&state);
