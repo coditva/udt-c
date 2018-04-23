@@ -1,6 +1,9 @@
 CC 				= gcc
 CC_FLAGS 		= -Wall -pedantic
 CL_FLAGS		= -L../src -ludt-c
+INC				= ../src/udt.h \
+				  ../src/packet.h \
+				  ../src/state.h
 OBJS			= server.o client.o
 TARGETS			= server client
 
@@ -12,5 +15,5 @@ $(TARGETS):%	: %.o
 clean			:
 				rm -f *.o $(OBJS) $(TARGETS)
 
-$(OBJS):%.o		: %.c Makefile
+$(OBJS):%.o:	%.c $(INC) Makefile
 				$(CC) $(CC_FLAGS) -I../src $< -c
