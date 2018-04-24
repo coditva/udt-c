@@ -7,7 +7,12 @@
 
 int udt_recv(socket_t sock, char *buffer, int len, int flags)
 {
-    return recv_buffer_read(buffer, len);
+    int num_read;
+    do {
+        num_read = recv_buffer_read(buffer, len);
+    } while (num_read == 0);
+
+    return num_read;
 }
 
 int udt_send(socket_t sock, char *buffer, int len, int flags)

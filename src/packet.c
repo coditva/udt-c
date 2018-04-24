@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+
 #include "packet.h"
+#include "buffer.h"
 
 int packet_is_data(packet_t packet)
 {
@@ -63,4 +65,14 @@ packet_t * packet_new(char *buffer, int len)
     }
 
     return packet;
+}
+
+void packet_parse(packet_t packet)
+{
+    /* TODO: parse packets! */
+
+    char msg[] = "Got a packet";
+    recv_buffer_write(msg, sizeof(msg));
+
+    return;
 }

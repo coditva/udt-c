@@ -73,6 +73,9 @@ void        packet_deserialize      (packet_t *, int);
 packet_t*   packet_new              (char *, int); 
 void        packet_delete           (packet_t); 
 
+/* Parse packet */
+void        packet_parse            (packet_t);
+
 
 #define PACKET_TYPE_MASK 0x80000000     /* 32nd bit */
 #define PACKET_SEQ_MASK  0x7FFFFFFF     /* 32nd bit */

@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
     char buffer[BUFFER_SIZE];
     char msg[] = "this is my message";
     while (udt_recv(conn, buffer, BUFFER_SIZE, 0)) {
+        printf("%s\n", buffer);
         memset(buffer, 0, sizeof(buffer));
         strcpy(buffer, msg);
         udt_send(conn, buffer, sizeof(msg), 0);
