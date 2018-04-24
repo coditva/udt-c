@@ -3,6 +3,6 @@
 
 #include "core.h"
 
-void receiver_start (conn_t *);
+void receiver_start (void *);
 
 #endif /* end of include guard: RECEIVER_H_OCZYMGVT */

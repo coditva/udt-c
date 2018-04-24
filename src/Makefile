@@ -15,7 +15,8 @@ OBJS			= socket.o \
 				  send_buffer.o \
 				  recv_buffer.o \
 				  receiver.o \
-				  sender.o
+				  sender.o \
+				  util.o
 
 $(TARGET): 		$(OBJS)
 				$(CC) $(CC_FLAGS) $(OBJS) -o $@
@@ -23,5 +24,8 @@ $(TARGET): 		$(OBJS)
 clean:
 				rm -f *.o $(OBJS) $(TARGET)
 
+util.o:			util.c util.h
+				$(CC) $(CC_FLAGS) -I. -c $< -lpthread
+
 $(OBJS):%.o:	%.c $(INC) Makefile
-				$(CC) $(CC_FLAGS) -I. -c $<
+				$(CC) $(CC_FLAGS) -I. -c $< -lpthread

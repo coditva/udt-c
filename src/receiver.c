@@ -5,8 +5,9 @@
 #include "udt.h"
 #include "receiver.h"
 
-void receiver_start (conn_t *receiver)
+void receiver_start (void *arg)
 {
+    conn_t *receiver = (conn_t *) arg;
     char buffer[1025];
     while (recv(receiver -> sock, buffer, 1024, 0)) {
         printf("Got a packet\n");

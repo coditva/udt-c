@@ -23,4 +23,10 @@
     } \
 }
 
+typedef long unsigned int tid_t;
+typedef void * (*thread_worker_t) (void *);
+
+tid_t thread_start (thread_worker_t, void *); 
+void  thread_stop  (tid_t);
+
 #endif /* end of include guard: UTIL_H_RSWIA2KL */
