@@ -1,7 +1,7 @@
 TARGET			= libudt-c.so
 CC 				= gcc
 CC_FLAGS 		= -Wall -pedantic -shared -fPIC
-INC				= udt.h packet.h state.h buffer.h util.h
+INC				= udt.h packet.h state.h buffer.h util.h receiver.h core.h
 OBJS			= socket.o \
 				  bind.o \
 				  close.o \
@@ -13,7 +13,8 @@ OBJS			= socket.o \
 				  state.o \
 				  buffer.o \
 				  send_buffer.o \
-				  recv_buffer.o
+				  recv_buffer.o \
+				  receiver.o
 
 $(TARGET): 		$(OBJS)
 				$(CC) $(CC_FLAGS) $(OBJS) -o $@
