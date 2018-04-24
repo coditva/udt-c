@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "config.h"
 #include "packet.h"
 #include "buffer.h"
 
@@ -49,17 +50,32 @@ int packet_new(packet_t *packet, packet_header_t *header,
 void packet_parse(packet_t packet)
 {
     packet_header_t header;
+    char buffer[PACKET_DATA_SIZE];
+    uint32_t type = 0,
+             isn = 0,
+             mss = 0,
+             flight_flag_size = 0,
+             id = 0,
+             req_type = 0,
+             cookie = 0;
 
     packet_deserialize(&packet);
     if (packet_is_control(packet)) {                    /* control packet */
         switch (packet_get_type(packet)) {
 
         case 0:                                 /* handshake */
-            fprintf(stderr, "log: Handshake packet received\n");
-
             header = packet.header;
-            packet_new(&packet, &header, "handshake response", 20);
-
+            sprintf(buffer, "%u%u%u%u%u%u%u%u",
+                    UDT_VERSION,
+                    type,
+                    isn,
+                    mss,
+                    flight_flag_size,
+                    req_type,
+                    id,
+                    cookie);
+            packet_new(&packet, &header, buffer, 8 * sizeof(uint32_t));
+            packet_serialize(&packet);
             send_packet_buffer_write(&packet);
             break;
 

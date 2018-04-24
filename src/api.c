@@ -31,8 +31,8 @@ int udt_bind (socket_t sock, sockaddr_t *addr, int len)
     if (result == -1) return result;
 
     connection.sock = sock;
-    connection.addr = *addr;
-    connection.addrlen = len;
+    connection.node.addr = *addr;
+    connection.node.addrlen = len;
 
     /* TODO: execute these functions with threads */
     thread_start((thread_worker_t) receiver_start, (&connection));

@@ -9,11 +9,12 @@
 
 void receiver_start (void *arg)
 {
-    conn_t *receiver = (conn_t *) arg;
+    conn_t *connection = (conn_t *) arg;
     packet_t packet;
 
     memset(&packet, 0, sizeof(packet_t));
-    while (recv(receiver -> sock, &packet, sizeof(packet_t), 0)) {
+    while (recvfrom(connection -> sock, &packet, sizeof(packet_t), 0,
+           &(connection -> peer.addr), &(connection -> peer.addrlen))) {
         packet_parse(packet);
         memset(&packet, 0, sizeof(packet_t));
     }

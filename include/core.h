@@ -5,8 +5,10 @@
 
 typedef struct {
     socket_t sock;
-    sockaddr_t addr;
-    int addrlen;
+    struct {
+        sockaddr_t addr;
+        unsigned int addrlen;
+    } node, peer;
     int is_open;
 } conn_t;
 

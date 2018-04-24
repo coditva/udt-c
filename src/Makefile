@@ -2,7 +2,8 @@ TARGET			= libudt-c.so
 CC 				= gcc
 CC_FLAGS 		= -Wall -g -pedantic -shared -fPIC
 INC_DIR			= ../include
-INC				= ../include/udt.h \
+INC				= ../include/config.h \
+				  ../include/udt.h \
 				  ../include/packet.h \
 				  ../include/buffer.h \
 				  ../include/util.h \
