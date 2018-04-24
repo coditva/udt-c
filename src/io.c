@@ -2,7 +2,6 @@
 
 #include "udt.h"
 #include "packet.h"
-#include "state.h"
 #include "buffer.h"
 
 int udt_recv(socket_t sock, char *buffer, int len, int flags)

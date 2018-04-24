@@ -1,9 +1,7 @@
 CC 				= gcc
 CC_FLAGS 		= -Wall -pedantic
 CL_FLAGS		= -L../src -ludt-c -lpthread
-INC				= ../src/udt.h \
-				  ../src/packet.h \
-				  ../src/state.h
+INC				= ../src/udt.h
 OBJS			= server.o client.o
 TARGETS			= server client
 

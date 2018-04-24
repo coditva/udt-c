@@ -4,8 +4,6 @@
 #include <netdb.h>
 
 #include "../src/udt.h"
-#include "../src/packet.h"
-#include "../src/state.h"
 
 #define BACKLOG     5
 #define HOST        "127.0.0.1"
