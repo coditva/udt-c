@@ -6,8 +6,9 @@
 #include "udt.h"
 #include "core.h"
 #include "receiver.h"
+#include "sender.h"
 
-static conn_t sender, receiver;
+static conn_t connection;
 
 int udt_bind (socket_t sock, sockaddr_t *addr, int len)
 {
@@ -16,9 +17,11 @@ int udt_bind (socket_t sock, sockaddr_t *addr, int len)
     result = bind(sock, (struct sockaddr *)addr, len);
     if (result == -1) return result;
 
-    sender.sock = sock;
-    receiver.sock = sock;
+    connection.sock = sock;
 
-    receiver_start(&receiver);
-    return -1;
+    /* TODO: execute these functions with threads */
+    /*receiver_start(&connection);*/
+    /*sender_start(&connection);*/
+
+    return 0;
 }

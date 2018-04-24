@@ -14,7 +14,8 @@ OBJS			= socket.o \
 				  buffer.o \
 				  send_buffer.o \
 				  recv_buffer.o \
-				  receiver.o
+				  receiver.o \
+				  sender.o
 
 $(TARGET): 		$(OBJS)
 				$(CC) $(CC_FLAGS) $(OBJS) -o $@
