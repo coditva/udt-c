@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <netdb.h>
-#include "../src/udt.h"
+#include "../include/udt.h"
 
 #define HOST "127.0.0.1"
 #define PORT "9000"

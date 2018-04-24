@@ -1,14 +1,14 @@
 TARGET			= libudt-c.so
 CC 				= gcc
 CC_FLAGS 		= -Wall -pedantic -shared -fPIC
-INC				= udt.h packet.h buffer.h util.h receiver.h core.h
-OBJS			= socket.o \
-				  bind.o \
-				  close.o \
-				  connect.o \
-				  listen.o \
-				  accept.o \
-				  io.o \
+INC_DIR			= ../include
+INC				= ../include/udt.h \
+				  ../include/packet.h \
+				  ../include/buffer.h \
+				  ../include/util.h \
+				  ../include/receiver.h \
+				  ../include/core.h
+OBJS			= api.o \
 				  packet.o \
 				  buffer.o \
 				  send_buffer.o \
@@ -24,4 +24,4 @@ clean:
 				rm -f *.o $(OBJS) $(TARGET)
 
 $(OBJS):%.o:	%.c $(INC) Makefile
-				$(CC) $(CC_FLAGS) -I. -c $<
+				$(CC) $(CC_FLAGS) -I$(INC_DIR) -c $<
