@@ -7,7 +7,7 @@
 #define MAX_PACKET_SIZE (MAX_DATA_SIZE + 4)
 
 /**
- * The udt packet structure
+ * The udt packet header structure
  *
  * There are two kinds of packets: data and control which are distinguished
  * based on the value of control.
@@ -25,34 +25,38 @@
  *   time_stamp
  */
 typedef struct {
-    struct {
-
-        /* header */
-        union {
-            uint32_t sequence_number;
-            struct {
-                uint16_t type;
-                uint16_t ext_type;
-            };
-            uint32_t _head0;
+    union {
+        uint32_t sequence_number;
+        struct {
+            uint16_t type;
+            uint16_t ext_type;
         };
-        union {
-            uint32_t message_number;
-            uint32_t ack_sequence_number;
-            uint32_t _head1;
-        };
-        union {
-            uint32_t timestamp;
-            uint32_t _head2;
-        };
-        union {
-            uint32_t id;
-            uint32_t _head3;
-        };
-
-        /* data */
-        uint32_t data[MAX_DATA_SIZE];
+        uint32_t _head0;
     };
+    union {
+        uint32_t message_number;
+        uint32_t ack_sequence_number;
+        uint32_t _head1;
+    };
+    union {
+        uint32_t timestamp;
+        uint32_t _head2;
+    };
+    union {
+        uint32_t id;
+        uint32_t _head3;
+    };
+} packet_header_t;
+
+
+/**
+ * The udt packet consists of a header and the data. The header is of size
+ * 4 * 32 bits and the data can be of maximum size according to the
+ * implementation.
+ */
+typedef struct {
+    packet_header_t header;
+    uint32_t        data[MAX_DATA_SIZE];
 } packet_t;
 
 /**

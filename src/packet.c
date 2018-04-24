@@ -11,19 +11,14 @@
 #define PACKET_MASK_TYPE 0x7FFF0000
 
 #define packet_is_control(PACKET) \
-    (PACKET._head0 & PACKET_MASK_CTRL)
+    (PACKET.header._head0 & PACKET_MASK_CTRL)
 
 #define packet_get_type(PACKET) \
-    (PACKET._head0 & PACKET_MASK_TYPE) \
-
-int32_t packet_get_seq (packet_t packet)
-{
-    return (packet.sequence_number & PACKET_MASK_SEQ);
-}
+    (PACKET.header._head0 & PACKET_MASK_TYPE) \
 
 void packet_deserialize(packet_t *packet)
 {
-    uint32_t *block = &(packet -> _head0);
+    uint32_t *block = &(packet -> header._head0);
     for (int i = 0; i < MAX_PACKET_SIZE; ++i) {
         *block = ntohl(*block);
         block++;
@@ -32,77 +27,81 @@ void packet_deserialize(packet_t *packet)
 
 void packet_serialize(packet_t *packet)
 {
-    uint32_t *block = &(packet -> _head0);
+    uint32_t *block = &(packet -> header._head0);
     for (int i = 0; i < MAX_PACKET_SIZE; ++i) {
         *block = htonl(*block);
         block++;
     }
 }
 
-packet_t * packet_new(char *buffer, int len)
+int packet_new(packet_t *packet, packet_header_t *header,
+               char *buffer, int len)
 {
     uint32_t *block = NULL;
     int i = 0;
-    packet_t *packet = NULL;
 
-    if (len > MAX_DATA_SIZE * 4) {
-        return NULL;
+    if (len > MAX_DATA_SIZE * sizeof(uint32_t)) {
+        return -1;
     }
 
-    packet = (packet_t *) malloc(sizeof(packet_t));
-    if (packet == NULL) return NULL;
-
     memset(packet, 0, sizeof(packet_t));
+    packet -> header = *header;
 
     block = (uint32_t *) buffer;
     while (len >= 0) {
         sscanf((char *)block, "%u", &(packet -> data[i]));
         i++;
-        len -= 8;
+        len -= sizeof(uint32_t);
     }
 
-    return packet;
+    return len;
 }
 
 void packet_parse(packet_t packet)
 {
+    packet_header_t header;
+
     packet_deserialize(&packet);
     if (packet_is_control(packet)) {                    /* control packet */
-
         switch (packet_get_type(packet)) {
 
-            case 0:                                 /* handshake */
-                fprintf(stderr, "log: Handshake packet received\n");
-                break;
+        case 0:                                 /* handshake */
+            fprintf(stderr, "log: Handshake packet received\n");
 
-            case 1:                                 /* keep-alive */
-                break;
+            header = packet.header;
+            packet_new(&packet, &header, "this is it", 10);
 
-            case 2:                                 /* ack */
-                break;
+            send_buffer_write((char *) &packet, sizeof(packet));
+            break;
 
-            case 3:                                 /* nak */
-                break;
+        case 1:                                 /* keep-alive */
+            break;
 
-            case 4:                                 /* congestion-delay warn */
-                break;
+        case 2:                                 /* ack */
+            break;
 
-            case 5:                                 /* shutdown */
-                break;
+        case 3:                                 /* nak */
+            break;
 
-            case 6:                                 /* ack of ack */
-                break;
+        case 4:                                 /* congestion-delay warn */
+            break;
 
-            case 7:                                 /* message drop request */
-                break;
+        case 5:                                 /* shutdown */
+            break;
 
-            case 8:                                 /* error signal */
-                break;
+        case 6:                                 /* ack of ack */
+            break;
 
-            default:                                /* unsupported packet type */
-                printf("Unknown type: %d\n", packet_get_type(packet));
-                char msg[] = "Unknown packet";
-                recv_buffer_write(msg, sizeof(msg));
+        case 7:                                 /* message drop request */
+            break;
+
+        case 8:                                 /* error signal */
+            break;
+
+        default:                                /* unsupported packet type */
+            printf("Unknown type: %d\n", packet_get_type(packet));
+            char msg[] = "Unknown packet";
+            recv_buffer_write(msg, sizeof(msg));
 
         }
     } else {                                            /* data packet */
