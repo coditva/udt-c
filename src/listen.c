@@ -2,5 +2,5 @@
 
 int udt_listen(socket_t sock, int backlog)
 {
-    return sock;
+    return listen(sock, backlog);
 }

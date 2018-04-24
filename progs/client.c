@@ -5,7 +5,7 @@
 #include "../src/udt.h"
 
 #define HOST "127.0.0.1"
-#define PORT 9000
+#define PORT "9000"
 
 int main(int argc, char *argv[])
 {
@@ -19,8 +19,9 @@ int main(int argc, char *argv[])
     hints.ai_flags = AI_PASSIVE;
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_DGRAM;
+    /*hints.ai_socktype = SOCK_STREAM;*/
 
-    if ((err = getaddrinfo(NULL, "9000", &hints, &result)) != 0) {
+    if ((err = getaddrinfo(NULL, PORT, &hints, &result)) != 0) {
         fprintf(stderr, "Error: %s\n", gai_strerror(err));
         exit(err);
     }
@@ -46,9 +47,16 @@ int main(int argc, char *argv[])
 
     /* send, recv */
     char buffer[1025];
-    while (send(sock, buffer, 1024, 0)) {
+    char msg[] = "this is the future man";
+    while (1) {
+        sprintf(buffer, msg);
+        if (udt_send(sock, buffer, sizeof(msg), 0) == -1)
+            exit(1);
+        printf("sent\n");
         memset(buffer, 0, sizeof(buffer));
-        sprintf(buffer, "this is the future man");
+        if (udt_recv(sock, buffer, sizeof(buffer), 0) == 0)
+            exit(1);
+        printf("recvd\n");
     }
 
     /* close the connection */

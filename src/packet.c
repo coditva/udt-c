@@ -46,7 +46,7 @@ packet_t * packet_new(char *buffer, int len)
     int i = 0;
     packet_t *packet = NULL;
 
-    if (len > MAX_DATA_SIZE * 8) {
+    if (len > MAX_DATA_SIZE * 4) {
         return NULL;
     }
 

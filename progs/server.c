@@ -9,7 +9,7 @@
 
 #define BACKLOG     5
 #define HOST        "127.0.0.1"
-#define PORT        9000
+#define PORT        "9000"
 #define BUFFER_SIZE 1000
 
 int main(int argc, char *argv[])
@@ -23,8 +23,9 @@ int main(int argc, char *argv[])
     hints.ai_flags = AI_PASSIVE;
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_DGRAM;
+    /*hints.ai_socktype = SOCK_STREAM;*/
 
-    if ((err = getaddrinfo(NULL, "9000", &hints, &result)) != 0) {
+    if ((err = getaddrinfo(NULL, PORT, &hints, &result)) != 0) {
         fprintf(stderr, "Error: %s\n", gai_strerror(err));
         exit(err);
     }
@@ -42,26 +43,31 @@ int main(int argc, char *argv[])
     if (udt_bind(sock, result -> ai_addr, result -> ai_addrlen) == -1) {
         fprintf(stderr, "Could not bind socket\n");
         exit(errno);
-    } else {
-        fprintf(stdout, "Active on %d\n", PORT);
     }
 
     freeaddrinfo(result);
 
-    /* listen for connections */
-    if (udt_listen(sock, BACKLOG) == -1) {
-        fprintf(stderr, "Could not listen on socket\n");
-        exit(errno);
-    } else {
-        fprintf(stdout, "Listening on %d\n", PORT);
-    }
+    if (hints.ai_socktype == SOCK_STREAM) {
 
-    /* get a connection */
-    if ((conn = udt_accept(sock, NULL, NULL)) == -1) {
-        fprintf(stderr, "Connection failed\n");
-        exit(errno);
+        /* listen for connections */
+        if (udt_listen(sock, BACKLOG) == -1) {
+            fprintf(stderr, "Could not listen on socket\n");
+            exit(errno);
+        } else {
+            fprintf(stdout, "Listening on %s\n", PORT);
+        }
+
+        /* get a connection */
+        if ((conn = udt_accept(sock, NULL, NULL)) == -1) {
+            fprintf(stderr, "Connection failed\n");
+            exit(errno);
+        } else {
+            fprintf(stdout, "New connection\n");
+        }
+
     } else {
-        fprintf(stdout, "New connection\n");
+        conn = sock;
+        fprintf(stdout, "Active on %s\n", PORT);
     }
 
     /* send, recv */
