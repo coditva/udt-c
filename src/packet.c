@@ -6,39 +6,36 @@
 #include "packet.h"
 #include "buffer.h"
 
-int packet_is_data(packet_t packet)
-{
-    return (packet.sequence_number & PACKET_TYPE_MASK) ? 0 : 1;
-}
+#define PACKET_MASK_CTRL 0x80000000
+#define PACKET_MASK_SEQ  0x7FFFFFFF
+#define PACKET_MASK_TYPE 0x7FFF0000
 
-int packet_is_control(packet_t packet)
-{
-    return (packet.sequence_number & PACKET_TYPE_MASK) ? 1 : 0;
-}
+#define packet_is_control(PACKET) \
+    (PACKET._head0 & PACKET_MASK_CTRL)
 
+#define packet_get_type(PACKET) \
+    (PACKET._head0 & PACKET_MASK_TYPE) \
 
 int32_t packet_get_seq (packet_t packet)
 {
-    return (packet.sequence_number & PACKET_SEQ_MASK);
+    return (packet.sequence_number & PACKET_MASK_SEQ);
 }
 
-void packet_deserialize(packet_t *packet, int len)
+void packet_deserialize(packet_t *packet)
 {
     uint32_t *block = &(packet -> _head0);
-    while (len > 0) {
+    for (int i = 0; i < MAX_PACKET_SIZE; ++i) {
         *block = ntohl(*block);
         block++;
-        len -= 8;
     }
 }
 
-void packet_serialize(packet_t *packet, int len)
+void packet_serialize(packet_t *packet)
 {
     uint32_t *block = &(packet -> _head0);
-    while (len > 0) {
+    for (int i = 0; i < MAX_PACKET_SIZE; ++i) {
         *block = htonl(*block);
         block++;
-        len -= 8;
     }
 }
 
@@ -69,10 +66,48 @@ packet_t * packet_new(char *buffer, int len)
 
 void packet_parse(packet_t packet)
 {
-    /* TODO: parse packets! */
+    packet_deserialize(&packet);
+    if (packet_is_control(packet)) {                    /* control packet */
 
-    char msg[] = "Got a packet";
-    recv_buffer_write(msg, sizeof(msg));
+        switch (packet_get_type(packet)) {
 
+            case 0:                                 /* handshake */
+                fprintf(stderr, "log: Handshake packet received\n");
+                break;
+
+            case 1:                                 /* keep-alive */
+                break;
+
+            case 2:                                 /* ack */
+                break;
+
+            case 3:                                 /* nak */
+                break;
+
+            case 4:                                 /* congestion-delay warn */
+                break;
+
+            case 5:                                 /* shutdown */
+                break;
+
+            case 6:                                 /* ack of ack */
+                break;
+
+            case 7:                                 /* message drop request */
+                break;
+
+            case 8:                                 /* error signal */
+                break;
+
+            default:                                /* unsupported packet type */
+                printf("Unknown type: %d\n", packet_get_type(packet));
+                char msg[] = "Unknown packet";
+                recv_buffer_write(msg, sizeof(msg));
+
+        }
+    } else {                                            /* data packet */
+        char msg[] = "Data packet";
+        recv_buffer_write(msg, sizeof(msg));
+    }
     return;
 }

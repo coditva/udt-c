@@ -10,11 +10,10 @@
 void receiver_start (void *arg)
 {
     conn_t *receiver = (conn_t *) arg;
-    char buffer[1025];
     packet_t packet;
 
     memset(&packet, 0, sizeof(packet_t));
-    while (recv(receiver -> sock, buffer, 1024, 0)) {
+    while (recv(receiver -> sock, &packet, sizeof(packet_t), 0)) {
         packet_parse(packet);
         memset(&packet, 0, sizeof(packet_t));
     }

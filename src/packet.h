@@ -4,6 +4,7 @@
 #include <inttypes.h>
 
 #define MAX_DATA_SIZE 20
+#define MAX_PACKET_SIZE (MAX_DATA_SIZE + 4)
 
 /**
  * The udt packet structure
