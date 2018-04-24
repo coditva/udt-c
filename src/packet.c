@@ -19,7 +19,7 @@
 void packet_deserialize(packet_t *packet)
 {
     uint32_t *block = &(packet -> header._head0);
-    for (int i = 0; i < MAX_PACKET_SIZE; ++i) {
+    for (int i = 0; i < PACKET_HEADER_SIZE; ++i) {
         *block = ntohl(*block);
         block++;
     }
@@ -28,7 +28,7 @@ void packet_deserialize(packet_t *packet)
 void packet_serialize(packet_t *packet)
 {
     uint32_t *block = &(packet -> header._head0);
-    for (int i = 0; i < MAX_PACKET_SIZE; ++i) {
+    for (int i = 0; i < PACKET_HEADER_SIZE; ++i) {
         *block = htonl(*block);
         block++;
     }
@@ -37,22 +37,11 @@ void packet_serialize(packet_t *packet)
 int packet_new(packet_t *packet, packet_header_t *header,
                char *buffer, int len)
 {
-    uint32_t *block = NULL;
-    int i = 0;
-
-    if (len > MAX_DATA_SIZE * sizeof(uint32_t)) {
-        return -1;
-    }
+    if (len > sizeof(packet -> data)) return -1;
 
     memset(packet, 0, sizeof(packet_t));
     packet -> header = *header;
-
-    block = (uint32_t *) buffer;
-    while (len >= 0) {
-        sscanf((char *)block, "%u", &(packet -> data[i]));
-        i++;
-        len -= sizeof(uint32_t);
-    }
+    strcpy(packet -> data, buffer);
 
     return len;
 }
@@ -69,9 +58,9 @@ void packet_parse(packet_t packet)
             fprintf(stderr, "log: Handshake packet received\n");
 
             header = packet.header;
-            packet_new(&packet, &header, "this is it", 10);
+            packet_new(&packet, &header, "handshake response", 20);
 
-            send_buffer_write((char *) &packet, sizeof(packet));
+            send_packet_buffer_write(&packet);
             break;
 
         case 1:                                 /* keep-alive */

@@ -1,6 +1,6 @@
 TARGET			= libudt-c.so
 CC 				= gcc
-CC_FLAGS 		= -Wall -pedantic -shared -fPIC
+CC_FLAGS 		= -Wall -g -pedantic -shared -fPIC
 INC_DIR			= ../include
 INC				= ../include/udt.h \
 				  ../include/packet.h \
@@ -13,6 +13,8 @@ OBJS			= api.o \
 				  buffer.o \
 				  send_buffer.o \
 				  recv_buffer.o \
+				  send_packet_buffer.o \
+				  recv_packet_buffer.o \
 				  receiver.o \
 				  sender.o \
 				  util.o

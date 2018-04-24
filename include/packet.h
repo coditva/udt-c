@@ -3,8 +3,8 @@
 
 #include <inttypes.h>
 
-#define MAX_DATA_SIZE 20
-#define MAX_PACKET_SIZE (MAX_DATA_SIZE + 4)
+#define PACKET_HEADER_SIZE (4 * sizeof(uint32_t))
+#define PACKET_DATA_SIZE 200
 
 /**
  * The udt packet header structure
@@ -56,7 +56,7 @@ typedef struct {
  */
 typedef struct {
     packet_header_t header;
-    uint32_t        data[MAX_DATA_SIZE];
+    char            data[PACKET_DATA_SIZE];
 } packet_t;
 
 /**

@@ -6,7 +6,9 @@
     if (BUFFER.size == 0) { \
         BUFFER.first = BLOCK; \
     } else { \
-        BUFFER.last -> next = BLOCK; \
+        BLOCK -> next = BUFFER.last; \
+        BLOCK -> next -> next = BLOCK; /* BUFFER.last -> lext = BLOCK */ \
+        BLOCK -> next = NULL; \
     } \
     BUFFER.last = BLOCK; \
     BUFFER.size++; \
