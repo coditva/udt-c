@@ -51,6 +51,7 @@ void packet_parse(packet_t packet)
 {
     packet_header_t header;
     char buffer[PACKET_DATA_SIZE];
+    uint32_t *p;
     uint32_t type = 0,
              isn = 0,
              mss = 0,
@@ -65,15 +66,18 @@ void packet_parse(packet_t packet)
 
         case 0:                                 /* handshake */
             header = packet.header;
-            sprintf(buffer, "%u%u%u%u%u%u%u%u",
-                    UDT_VERSION,
-                    type,
-                    isn,
-                    mss,
-                    flight_flag_size,
-                    req_type,
-                    id,
-                    cookie);
+
+            /* add handshake info */
+            p = (uint32_t *) buffer;
+            *p++ = UDT_VERSION;
+            *p++ = type;
+            *p++ = isn;
+            *p++ = mss;
+            *p++ = flight_flag_size;
+            *p++ = req_type;
+            *p++ = id;
+            *p++ = cookie;
+
             packet_new(&packet, &header, buffer, 8 * sizeof(uint32_t));
             packet_serialize(&packet);
             send_packet_buffer_write(&packet);
