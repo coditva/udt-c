@@ -14,8 +14,6 @@ OBJS			= api.o \
 				  buffer.o \
 				  send_buffer.o \
 				  recv_buffer.o \
-				  send_packet_buffer.o \
-				  recv_packet_buffer.o \
 				  receiver.o \
 				  sender.o \
 				  util.o
