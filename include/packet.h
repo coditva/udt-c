@@ -22,18 +22,21 @@
 #define PACKET_TYPE_DROPREQ   0xFFF7FFFF
 #define PACKET_TYPE_ERRSIG    0xFFF8FFFF
 
+#define PACKET_BOUNDARY_END   1
+#define PACKET_BOUNDARY_START 2
+#define PACKET_BOUNDARY_SOLO  3
 
 #define packet_is_control(PACKET) \
     ((PACKET).header._head0 & PACKET_MASK_CTRL)
-
-#define packet_set_data(PACKET) \
-    ((PACKET).header._head0 &= 0x7FFFFFFF)
 
 #define packet_clear_header(PACKET) \
     ((PACKET).header._head0 = 0x00000000); \
     ((PACKET).header._head1 = 0x00000000); \
     ((PACKET).header._head2 = 0x00000000); \
     ((PACKET).header._head3 = 0x00000000)
+
+#define packet_set_data(PACKET) \
+    ((PACKET).header._head0 &= 0x7FFFFFFF)
 
 #define packet_set_ctrl(PACKET) \
     ((PACKET).header._head0 |= PACKET_MASK_CTRL)
@@ -43,15 +46,21 @@
     ((PACKET).header._head0 |= (SEQNUM))
 
 #define packet_set_boundary(PACKET, BOUNDARY) \
-    ((PACKET).header._head1 &= 0x30000000); \
+    ((PACKET).header._head1 &= 0xC0000000); \
     ((PACKET).header._head1 |= (BOUNDARY << 30))
 
 #define packet_set_order(PACKET, ORDER) \
-    ((PACKET).header._head1 &= (ORDER) ? 0x00000000 : 0x00000000 )
+    ((PACKET).header._head1 |= (ORDER) ? 0x20000000 : 0x00000000 )
 
 #define packet_set_msgnum(PACKET, MSGNUM) \
-    ((PACKET).header._head1 &= 0xE0000000); \
+    ((PACKET).header._head1 &= 0xF0000000); \
     ((PACKET).header._head1 |= (MSGNUM))
+
+#define packet_set_timestamp(PACKET, TIMESTAMP) \
+    ((PACKET).header._head2 |= TIMESTAMP)
+
+#define packet_set_id(PACKET, PACKET_ID) \
+    ((PACKET).header._head3 |= PACKET_ID)
 
 #define packet_get_type(PACKET) \
     ((PACKET).header._head0 & PACKET_MASK_TYPE)
