@@ -116,7 +116,19 @@ void packet_parse(packet_t packet)
 
         }
     } else {                                            /* data packet */
-        recv_buffer_write(packet.data, sizeof(packet.data));
+
+        if (packet.header._head1 & 0x80000000 &&
+            packet.header._head1 & 0x40000000)      /* solo packet */
+            recv_buffer_write(packet.data, PACKET_DATA_SIZE);
+
+        else if (packet.header._head1 & 0x40000000) /* last packet */
+            recv_buffer_write(packet.data, PACKET_DATA_SIZE);
+
+        else if (packet.header._head1 & 0x80000000) /* first packet */
+            recv_buffer_write(packet.data, -1);
+
+        else                                        /* middle packet */
+            recv_buffer_write(packet.data, -1);
     }
     return;
 }

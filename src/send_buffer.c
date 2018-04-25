@@ -33,14 +33,14 @@ int send_buffer_write(char *data, int len)
     seqnum = 2142894844;  /* TODO: generate random number */
     buffer = data;
     boundary = PACKET_BOUNDARY_START;
-    packet_clear_header (packet);
-    packet_set_data     (packet);
 
     while (len > 0) {
         size = (len > PACKET_DATA_SIZE) ? PACKET_DATA_SIZE : len;
         len -= PACKET_DATA_SIZE;
         boundary |= (len > 0) ? PACKET_BOUNDARY_NONE : PACKET_BOUNDARY_END;
 
+        packet_clear_header (packet);
+        packet_set_data     (packet);
         packet_set_seqnum   (packet, seqnum++);
         packet_set_boundary (packet, boundary);
         packet_set_order    (packet, 1);

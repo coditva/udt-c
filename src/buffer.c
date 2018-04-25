@@ -23,26 +23,47 @@ int buffer_write(buffer_t *buffer, char *data, int len)
     if (new_block == NULL) return -1;
 
     new_block -> data = new_data;
-    new_block -> len  = len;
+    new_block -> len = len;
+    if (len == -1) {
+        new_block -> last = 0;
+        new_block -> len = PACKET_DATA_SIZE;
+    } else {
+        new_block -> last = 1;
+    }
 
     linked_list_add((*buffer), new_block);
 
-    return len;
+    return new_block -> len;
 }
 
 int buffer_read(buffer_t *buffer, char *data, int len)
 {
     block_t *block;
+    int retval = 0;
+    int pos = 0;
+    int last = 0;
 
-    linked_list_get((*buffer), block);
-    if (block == NULL) return 0;
+    while (last == 0) {
+        linked_list_get((*buffer), block);
+        if (block == NULL) break;
 
-    if (len < block -> len) return -1;
-    strcpy(data, block -> data);
-    free(block -> data);
-    free(block);
+        last = block -> last;
+        if (pos >= len) {
+            free(block -> data);
+            free(block);
+            continue;
+        }
 
-    return block -> len;
+        int n = ((len - pos) < block -> len) ? len - pos : block -> len;
+        strncpy(data + pos, block -> data, n);
+        retval += n;
+        pos += n;
+
+        free(block -> data);
+        free(block);
+    }
+
+    return retval;
 }
 
 int buffer_write_packet(buffer_t *buffer, packet_t *packet)

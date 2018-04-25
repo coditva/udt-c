@@ -8,6 +8,7 @@ typedef struct _block block_t;
 struct _block {
     char *data;
     int len;
+    int last;
     block_t *next;
 };
 
