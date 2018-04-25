@@ -13,6 +13,7 @@ void receiver_start (void *arg)
     memset(&packet, 0, sizeof(packet_t));
     while (recvfrom(conn -> sock, &packet, sizeof(packet_t), 0,
            &(conn -> addr), &(conn -> addrlen))) {
+        conn -> is_open = 1;
         packet_parse(packet);
         memset(&packet, 0, sizeof(packet_t));
     }

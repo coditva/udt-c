@@ -3,6 +3,7 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "udt.h"
 #include "core.h"
@@ -37,7 +38,9 @@ int udt_bind (socket_t sock, sockaddr_t *addr, int len)
     if (result == -1) return result;
 
     connection.sock = sock;
-    connection.is_client = 0;
+    connection.is_open = 0;
+    connection.addrlen = len;
+    memset(&connection.addr, 0, sizeof(sockaddr_t));
 
     thread_start((thread_worker_t) receiver_start, (&connection));
     thread_start((thread_worker_t) sender_start, (&connection));
@@ -55,7 +58,7 @@ int udt_connect(socket_t sock, const sockaddr_t *addr, int len)
     connection.sock = sock;
     connection.addr = *addr;
     connection.addrlen = len;
-    connection.is_client = 1;
+    connection.is_open = 1;
 
     thread_start((thread_worker_t) receiver_start, (&connection));
     thread_start((thread_worker_t) sender_start, (&connection));

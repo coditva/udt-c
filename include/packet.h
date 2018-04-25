@@ -3,7 +3,7 @@
 
 #include <inttypes.h>
 
-#define PACKET_HEADER_SIZE (4 * sizeof(uint32_t))
+#define PACKET_HEADER_SIZE 4
 #define PACKET_DATA_SIZE 200
 
 /**

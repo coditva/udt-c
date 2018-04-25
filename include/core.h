@@ -9,7 +9,6 @@ typedef struct {
         sockaddr_t addr;
         unsigned int addrlen;
     };
-    int is_client;
     int is_open;
 } conn_t;
 

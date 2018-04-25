@@ -50,13 +50,14 @@ int main(int argc, char *argv[])
 
     /* send, recv */
     char buffer[BUFFER_SIZE];
-    char msg[] = "Client pays his respects";
-    udt_send(sock, msg, sizeof(msg), 0);
+    size_t size;
+    char *line;
+    udt_send(sock, "Client want to talk", sizeof(buffer), 0);
     while (udt_recv(sock, buffer, BUFFER_SIZE, 0) > 0) {
-        printf("Recvd: %s\n", buffer);
+        printf("Recvd: %s\n>> ", buffer);
         memset(buffer, 0, sizeof(buffer));
-        strcpy(buffer, msg);
-        udt_send(sock, buffer, sizeof(msg), 0);
+        getline(&line, &size, stdin);
+        udt_send(sock, line, size, 0);
     }
 
     /* close the connection */
