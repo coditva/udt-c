@@ -7,28 +7,6 @@
 #include "packet.h"
 #include "buffer.h"
 
-#define PACKET_MASK_CTRL 0x80000000
-#define PACKET_MASK_SEQ  0x7FFFFFFF
-#define PACKET_MASK_TYPE 0x7FFF0000
-
-#define PACKET_TYPE_HANDSHAKE 0x00000000
-#define PACKET_TYPE_KEEPALIVE 0x00010000
-#define PACKET_TYPE_ACK       0x00020000
-#define PACKET_TYPE_NAK       0x00030000
-#define PACKET_TYPE_CONGDELAY 0x00040000
-#define PACKET_TYPE_SHUTDOWN  0x00050000
-#define PACKET_TYPE_ACK2      0x00060000
-#define PACKET_TYPE_DROPREQ   0x00070000
-#define PACKET_TYPE_ERRSIG    0x00080000
-
-#define packet_is_control(PACKET) \
-    ((PACKET).header._head0 & PACKET_MASK_CTRL)
-
-#define packet_get_type(PACKET) \
-    ((PACKET).header._head0 & PACKET_MASK_TYPE) \
-
-#define packet_set_type(PACKET, PACKET_TYPE) \
-    ((PACKET).header._head0 |= (PACKET_TYPE)) \
 
 void packet_deserialize(packet_t *packet)
 {
