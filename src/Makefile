@@ -10,6 +10,7 @@ INC				= ../include/config.h \
 				  ../include/receiver.h \
 				  ../include/core.h
 OBJS			= api.o \
+				  core.o \
 				  packet.o \
 				  buffer.o \
 				  send_buffer.o \

@@ -10,6 +10,13 @@ typedef struct {
         unsigned int addrlen;
     };
     int is_open;
+    int is_connected;
+    int is_client;
 } conn_t;
+
+conn_t connection;
+
+void    handshake_init      ();
+void    handshake_terminate ();
 
 #endif /* end of include guard: CORE_H_7KCLGLUV */

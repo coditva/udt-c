@@ -12,7 +12,7 @@
 #include "util.h"
 #include "buffer.h"
 
-static conn_t connection;
+extern conn_t connection;
 
 int udt_startup() {
     send_buffer_init();
@@ -40,7 +40,8 @@ int udt_bind (socket_t sock, sockaddr_t *addr, int len)
     connection.sock = sock;
     connection.is_open = 0;
     connection.addrlen = len;
-    memset(&connection.addr, 0, sizeof(sockaddr_t));
+    connection.is_connected = 0;
+    connection.is_client = 0;
 
     thread_start((thread_worker_t) receiver_start, (&connection));
     thread_start((thread_worker_t) sender_start, (&connection));
@@ -59,10 +60,15 @@ int udt_connect(socket_t sock, const sockaddr_t *addr, int len)
     connection.addr = *addr;
     connection.addrlen = len;
     connection.is_open = 1;
+    connection.is_connected = 0;
+    connection.is_client = 1;
 
     thread_start((thread_worker_t) receiver_start, (&connection));
     thread_start((thread_worker_t) sender_start, (&connection));
 
+    handshake_init();
+
+    while (!connection.is_connected);
     return result;
 }
 
@@ -79,6 +85,7 @@ int udt_listen(socket_t sock, int backlog)
 int udt_recv(socket_t sock, char *buffer, int len, int flags)
 {
     int num_read;
+
     do {
         num_read = recv_buffer_read(buffer, len);
     } while (num_read == 0);
@@ -88,6 +95,7 @@ int udt_recv(socket_t sock, char *buffer, int len, int flags)
 
 int udt_send(socket_t sock, char *buffer, int len, int flags)
 {
+    if (!connection.is_connected) return -1;
     return send_buffer_write(buffer, len);
 }
 

@@ -6,6 +6,7 @@
 #include "config.h"
 #include "packet.h"
 #include "buffer.h"
+#include "core.h"
 
 
 void packet_deserialize(packet_t *packet)
@@ -39,11 +40,11 @@ int packet_new(packet_t *packet, packet_header_t *header,
     return len;
 }
 
-void packet_parse(packet_t packet)
+int packet_new_handshake(packet_t *packet)
 {
-    packet_header_t header;
-    char buffer[PACKET_DATA_SIZE];
-    uint32_t *p;
+    packet_t new_packet;
+    char buffer[8 * sizeof(uint32_t)];
+    uint32_t *p = NULL;
     uint32_t type = 0,
              isn = 0,
              mss = 0,
@@ -52,26 +53,42 @@ void packet_parse(packet_t packet)
              req_type = 0,
              cookie = 0;
 
+    packet_clear_header (new_packet);
+    packet_set_ctrl     (new_packet);
+    packet_set_type     (new_packet, PACKET_TYPE_HANDSHAKE);
+    packet_set_timestamp(new_packet, 0);
+    packet_set_id       (new_packet, 0);
+
+    p = (uint32_t *) buffer;
+    *p++ = UDT_VERSION;
+    *p++ = type;
+    *p++ = isn;
+    *p++ = mss;
+    *p++ = flight_flag_size;
+    *p++ = req_type;
+    *p++ = id;
+    *p++ = cookie;
+
+    return packet_new(packet, &new_packet.header, buffer, sizeof(buffer));
+}
+
+void packet_parse(packet_t packet)
+{
+    packet_header_t header;
+
     packet_deserialize(&packet);
     if (packet_is_control(packet)) {                    /* control packet */
         switch (packet_get_type(packet)) {
 
         case 0:                                 /* handshake */
-            header = packet.header;
-
-            /* add handshake info */
-            p = (uint32_t *) buffer;
-            *p++ = UDT_VERSION;
-            *p++ = type;
-            *p++ = isn;
-            *p++ = mss;
-            *p++ = flight_flag_size;
-            *p++ = req_type;
-            *p++ = id;
-            *p++ = cookie;
-
-            packet_new(&packet, &header, buffer, 8 * sizeof(uint32_t));
+            printf("Handshaked\n");
+            if (connection.is_client) {
+                handshake_terminate();
+                break;
+            }
+            packet_new_handshake(&packet);
             send_packet_buffer_write(&packet);
+            connection.is_connected = 1;
             break;
 
         case 1:                                 /* keep-alive */
