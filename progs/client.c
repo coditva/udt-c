@@ -56,8 +56,11 @@ int main(int argc, char *argv[])
     while (udt_recv(sock, buffer, BUFFER_SIZE, 0) > 0) {
         printf("Recvd: %s\n>> ", buffer);
         memset(buffer, 0, sizeof(buffer));
-        getline(&line, &size, stdin);
+
+        size = 0;
+        size = getline(&line, &size, stdin);
         udt_send(sock, line, size, 0);
+        free(line);
     }
 
     /* close the connection */
