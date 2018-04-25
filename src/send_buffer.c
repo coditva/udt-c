@@ -21,7 +21,6 @@ int send_packet_buffer_read(packet_t *packet)
 
 int send_buffer_write(char *data, int len)
 {
-    packet_t new_packet;
     packet_t packet;
     int size = 0;
     int seqnum;
@@ -49,8 +48,8 @@ int send_buffer_write(char *data, int len)
         packet_set_timestamp(packet, 0x0000051c); /* TODO: calculate time */
         packet_set_id       (packet, 0x08c42c74); /* TODO: generate an id */
 
-        packet_new(&new_packet, &packet.header, buffer, size);
-        send_packet_buffer_write(&new_packet);
+        packet_new(&packet, buffer, size);
+        send_packet_buffer_write(&packet);
 
         buffer += size;
         boundary = PACKET_BOUNDARY_NONE;
@@ -62,10 +61,8 @@ int send_buffer_write(char *data, int len)
     packet_set_timestamp(packet, 0x0000051c); /* TODO: calculate time */
     packet_set_id       (packet, 0x08c42c74); /* TODO: generate an id */
 
-    printf("%x\n", packet.header._head0);
-
-    packet_new(&new_packet, &packet.header, NULL, 0);
-    send_packet_buffer_write(&new_packet);
+    packet_new(&packet, NULL, 0);
+    send_packet_buffer_write(&packet);
 
     return retval;
 }

@@ -27,13 +27,11 @@ void packet_serialize(packet_t *packet)
     }
 }
 
-int packet_new(packet_t *packet, packet_header_t *header,
-               char *buffer, int len)
+int packet_new(packet_t *packet, char *buffer, int len)
 {
     if (len > sizeof(packet -> data)) return -1;
 
-    memset(packet, 0, sizeof(packet_t));
-    packet -> header = *header;
+    memset(packet -> data, 0, sizeof(PACKET_DATA_SIZE));
     strncpy(packet -> data, buffer, len);
     packet_serialize(packet);
 
@@ -42,7 +40,6 @@ int packet_new(packet_t *packet, packet_header_t *header,
 
 int packet_new_handshake(packet_t *packet)
 {
-    packet_t new_packet;
     char buffer[8 * sizeof(uint32_t)];
     uint32_t *p = NULL;
     uint32_t type = 0,
@@ -53,11 +50,11 @@ int packet_new_handshake(packet_t *packet)
              req_type = 0,
              cookie = 0;
 
-    packet_clear_header (new_packet);
-    packet_set_ctrl     (new_packet);
-    packet_set_type     (new_packet, PACKET_TYPE_HANDSHAKE);
-    packet_set_timestamp(new_packet, 0);
-    packet_set_id       (new_packet, 0);
+    packet_clear_header (*packet);
+    packet_set_ctrl     (*packet);
+    packet_set_type     (*packet, PACKET_TYPE_HANDSHAKE);
+    packet_set_timestamp(*packet, 0);
+    packet_set_id       (*packet, 0);
 
     p = (uint32_t *) buffer;
     *p++ = UDT_VERSION;
@@ -69,19 +66,16 @@ int packet_new_handshake(packet_t *packet)
     *p++ = id;
     *p++ = cookie;
 
-    return packet_new(packet, &new_packet.header, buffer, sizeof(buffer));
+    return packet_new(packet, buffer, sizeof(buffer));
 }
 
 void packet_parse(packet_t packet)
 {
-    packet_header_t header;
-
     packet_deserialize(&packet);
     if (packet_is_control(packet)) {                    /* control packet */
         switch (packet_get_type(packet)) {
 
         case PACKET_TYPE_HANDSHAKE:             /* handshake */
-            printf("Handshaked\n");
             if (connection.is_client) {
                 handshake_terminate();
                 break;
@@ -95,7 +89,6 @@ void packet_parse(packet_t packet)
             break;
 
         case PACKET_TYPE_ACK:                   /* ack */
-            printf("acked\n");
             break;
 
         case PACKET_TYPE_NAK:                   /* nak */

@@ -130,10 +130,9 @@ typedef struct {
  *
  * @param   packet_t    The packet to be parsed
  */
-void        packet_parse    (packet_t);
+void        packet_parse            (packet_t);
 
-int         packet_new      (packet_t *, packet_header_t *, char *, int);
-
+int         packet_new              (packet_t *, char *, int);
 int         packet_new_handshake    (packet_t *);
 
 #endif /* end of include guard: PACKET_H_R7ONXCYA */
