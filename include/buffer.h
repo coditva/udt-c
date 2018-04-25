@@ -1,6 +1,7 @@
 #ifndef BUFFER_H_IBSOFJRY
 #define BUFFER_H_IBSOFJRY
 
+#include <pthread.h>
 #include "packet.h"
 
 typedef struct _block block_t;
@@ -22,7 +23,12 @@ struct _buffer {
     void *first;
     void *last;
     int size;
+    pthread_mutex_t mutex;
 };
+
+int buffer_init         (buffer_t *);
+int send_buffer_init    ();
+int recv_buffer_init    ();
 
 int buffer_write        (buffer_t *, char *, int);
 int buffer_write_packet (buffer_t *, packet_t *);
@@ -30,7 +36,6 @@ int buffer_read         (buffer_t *, char *, int);
 int buffer_read_packet  (buffer_t *, packet_t *);
 
 int send_buffer_write   (char *data, int len);
-int send_buffer_read    (char *data, int len);
 int recv_buffer_write   (char *data, int len);
 int recv_buffer_read    (char *data, int len);
 

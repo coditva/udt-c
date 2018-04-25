@@ -6,6 +6,7 @@
 
 #define HOST "127.0.0.1"
 #define PORT "9000"
+#define BUFFER_SIZE 1000
 
 int main(int argc, char *argv[])
 {
@@ -13,6 +14,8 @@ int main(int argc, char *argv[])
     int             err;
     struct addrinfo hints,
                     *result;
+
+    udt_startup();
 
     /* get address info */
     memset(&hints, 0, sizeof(hints));
@@ -36,7 +39,7 @@ int main(int argc, char *argv[])
     }
 
     /* connect to server */
-    if (connect(sock, result -> ai_addr, result -> ai_addrlen) == -1) {
+    if (udt_connect(sock, result -> ai_addr, result -> ai_addrlen) == -1) {
         fprintf(stderr, "Could not connect to socket\n");
         exit(errno);
     } else {
@@ -46,17 +49,14 @@ int main(int argc, char *argv[])
     freeaddrinfo(result);
 
     /* send, recv */
-    char buffer[1025];
-    char msg[] = "this is the future man";
-    while (1) {
-        sprintf(buffer, msg);
-        if (udt_send(sock, buffer, sizeof(msg), 0) == -1)
-            exit(1);
-        printf("sent\n");
+    char buffer[BUFFER_SIZE];
+    char msg[] = "Client pays his respects";
+    udt_send(sock, msg, sizeof(msg), 0);
+    while (udt_recv(sock, buffer, BUFFER_SIZE, 0) > 0) {
+        printf("Recvd: %s\n", buffer);
         memset(buffer, 0, sizeof(buffer));
-        if (udt_recv(sock, buffer, sizeof(buffer), 0) == 0)
-            exit(1);
-        printf("recvd\n");
+        strcpy(buffer, msg);
+        udt_send(sock, buffer, sizeof(msg), 0);
     }
 
     /* close the connection */

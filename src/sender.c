@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <string.h>
 #include <sys/socket.h>
 
 #include "core.h"
@@ -7,14 +7,15 @@
 
 void sender_start (void *arg)
 {
-    conn_t *connection = (conn_t *) arg;
+    conn_t *conn = (conn_t *) arg;
     packet_t packet;
 
+    memset(&packet, 0, sizeof(packet_t));
     while (1) {
         if (send_packet_buffer_read(&packet)) {
-            printf("Send: %s\n", packet.data);
-            sendto(connection -> sock, &packet, sizeof(packet_t), 0,
-                   &(connection -> peer.addr), connection -> peer.addrlen);
+            sendto(conn -> sock, &packet, sizeof(packet_t), 0,
+                   &(conn -> addr), conn -> addrlen);
+            memset(&packet, 0, sizeof(packet_t));
         }
     }
 }

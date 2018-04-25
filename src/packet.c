@@ -43,6 +43,7 @@ int packet_new(packet_t *packet, packet_header_t *header,
     memset(packet, 0, sizeof(packet_t));
     packet -> header = *header;
     strcpy(packet -> data, buffer);
+    packet_serialize(packet);
 
     return len;
 }
@@ -79,7 +80,6 @@ void packet_parse(packet_t packet)
             *p++ = cookie;
 
             packet_new(&packet, &header, buffer, 8 * sizeof(uint32_t));
-            packet_serialize(&packet);
             send_packet_buffer_write(&packet);
             break;
 
@@ -114,8 +114,7 @@ void packet_parse(packet_t packet)
 
         }
     } else {                                            /* data packet */
-        char msg[] = "Data packet";
-        recv_buffer_write(msg, sizeof(msg));
+        recv_buffer_write(packet.data, sizeof(packet.data));
     }
     return;
 }

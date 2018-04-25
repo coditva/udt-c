@@ -1,6 +1,12 @@
+#include <pthread.h>
 #include "buffer.h"
 
 static buffer_t buffer;
+
+int recv_buffer_init()
+{
+    return buffer_init(&buffer);
+}
 
 int recv_buffer_write(char *data, int len)
 {

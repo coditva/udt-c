@@ -13,6 +13,12 @@
 
 static conn_t connection;
 
+int udt_startup() {
+    send_buffer_init();
+    recv_buffer_init();
+    return 0;
+}
+
 socket_t udt_socket(af_type af, sock_type type, int protocol)
 {
     if (type != SOCK_STREAM && type != SOCK_DGRAM) {
@@ -31,14 +37,30 @@ int udt_bind (socket_t sock, sockaddr_t *addr, int len)
     if (result == -1) return result;
 
     connection.sock = sock;
-    connection.node.addr = *addr;
-    connection.node.addrlen = len;
+    connection.is_client = 0;
 
-    /* TODO: execute these functions with threads */
     thread_start((thread_worker_t) receiver_start, (&connection));
     thread_start((thread_worker_t) sender_start, (&connection));
 
-    return 0;
+    return result;
+}
+
+int udt_connect(socket_t sock, const sockaddr_t *addr, int len)
+{
+    int result = 0;
+
+    result = connect(sock, (struct sockaddr *)addr, len);
+    if (result == -1) return result;
+
+    connection.sock = sock;
+    connection.addr = *addr;
+    connection.addrlen = len;
+    connection.is_client = 1;
+
+    thread_start((thread_worker_t) receiver_start, (&connection));
+    thread_start((thread_worker_t) sender_start, (&connection));
+
+    return result;
 }
 
 int udt_accept(socket_t sock, sockaddr_t *addr, int *addr_len)

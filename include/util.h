@@ -1,8 +1,11 @@
 #ifndef UTIL_H_RSWIA2KL
 #define UTIL_H_RSWIA2KL
 
+#include <pthread.h>
+
 #define linked_list_add(BUFFER, BLOCK) \
 { \
+    pthread_mutex_lock(&(BUFFER.mutex)); \
     if (BUFFER.size == 0) { \
         BUFFER.first = BLOCK; \
     } else { \
@@ -12,10 +15,12 @@
     } \
     BUFFER.last = BLOCK; \
     BUFFER.size++; \
+    pthread_mutex_unlock(&(BUFFER.mutex)); \
 }
 
 #define linked_list_get(BUFFER, BLOCK) \
 { \
+    pthread_mutex_lock(&(BUFFER.mutex)); \
     if (BUFFER.size == 0) { \
         BLOCK = NULL; \
     } else { \
@@ -23,9 +28,10 @@
         BUFFER.first = BLOCK -> next; \
         BUFFER.size--; \
     } \
+    pthread_mutex_unlock(&(BUFFER.mutex)); \
 }
 
-typedef long unsigned int tid_t;
+typedef pthread_t tid_t;
 typedef void * (*thread_worker_t) (void *);
 
 tid_t thread_start (thread_worker_t, void *); 

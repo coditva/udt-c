@@ -16,6 +16,8 @@ int main(int argc, char *argv[])
     int             err;
     struct addrinfo hints, *result;
 
+    udt_startup();
+
     /* get address info */
     memset(&hints, 0, sizeof(hints));
     hints.ai_flags = AI_PASSIVE;
@@ -70,12 +72,12 @@ int main(int argc, char *argv[])
 
     /* send, recv */
     char buffer[BUFFER_SIZE];
-    char msg[] = "this is my message";
+    char msg[] = "Servito ergo sum";
     while (udt_recv(conn, buffer, BUFFER_SIZE, 0)) {
-        printf("%s\n", buffer);
+        printf("Req: %s\n", buffer);
         memset(buffer, 0, sizeof(buffer));
-        strcpy(buffer, msg);
-        udt_send(conn, buffer, sizeof(msg), 0);
+        udt_send(conn, msg, sizeof(msg), 0);
+        printf("Res: %s\n", msg);
     }
 
     /* close connection */

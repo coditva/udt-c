@@ -1,8 +1,15 @@
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 
 #include "buffer.h"
 #include "util.h"
+
+int buffer_init(buffer_t *buffer)
+{
+    pthread_mutex_init(&(buffer -> mutex), NULL);
+    return 0;
+}
 
 int buffer_write(buffer_t *buffer, char *data, int len)
 {
