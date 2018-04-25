@@ -97,9 +97,29 @@ int         udt_recv    (socket_t, char *, int, int);
  */
 int         udt_send    (socket_t, char *, int, int);
 
-/*int64_t     udt_sendfile(socker_t, fstream&, const int64_t, const int64_t,*/
-                         /*const int);*/
-/*int64_t     udt_recvfile(socker_t, fstream&, const int64_t, const int64_t,*/
-                         /*const int);*/
+/**
+ * Receive a file from the socket
+ *
+ * @param   socket_t    The socket to receive from
+ * @param   void*       Pointer to the file to store incoming data
+ * @param   int64_t     The offset position to store. After transfer, contains
+ *                      new offset
+ * @param   int64_t     The total size to be received
+ * @param   int         The size of data block
+ * @return  int64_t     Size of data sent, -1 on error
+ */
+int64_t     udt_recvfile(socket_t, void *, int64_t *, int64_t, int);
+
+/**
+ * Send a file to the socket
+ *
+ * @param   socket_t    The socket to send to
+ * @param   void*       The file buffer to send
+ * @param   int64_t     The offset position to read data
+ * @param   int64_t     The total size to be sent
+ * @param   int         The size of data block
+ * @return  int64_t     Size of data sent, -1 on error
+ */
+int64_t     udt_sendfile(socket_t, void *, int64_t, int64_t, int);
 
 #endif /* end of include guard: UDT_H_JDNRQTZQ */
