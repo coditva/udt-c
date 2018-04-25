@@ -52,8 +52,8 @@ int main(int argc, char *argv[])
     char buffer[BUFFER_SIZE];
     size_t size;
     char *line;
-    udt_send(sock, "Client want to talk", sizeof(buffer), 0);
-    while (udt_recv(sock, buffer, BUFFER_SIZE, 0) > 0) {
+    udt_send(sock, "Client want to talk", strlen(buffer) + 1, 0);
+    while (udt_recv(sock, buffer, sizeof(buffer), 0) > 0) {
         printf("Recvd: %s\n>> ", buffer);
         memset(buffer, 0, sizeof(buffer));
 
