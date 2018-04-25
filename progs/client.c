@@ -52,13 +52,15 @@ int main(int argc, char *argv[])
     char buffer[BUFFER_SIZE];
     size_t size;
     char *line;
-    udt_send(sock, "Client want to talk", strlen(buffer) + 1, 0);
+    strcpy(buffer, "Client wants to talk");
+    udt_send(sock, buffer, strlen(buffer) + 1, 0);
     while (udt_recv(sock, buffer, sizeof(buffer), 0) > 0) {
         printf("Recvd: %s\n>> ", buffer);
         memset(buffer, 0, sizeof(buffer));
 
         size = 0;
         size = getline(&line, &size, stdin);
+        *(line + size - 1) = '\0';
         udt_send(sock, line, size, 0);
         free(line);
     }
