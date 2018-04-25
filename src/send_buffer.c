@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "buffer.h"
 #include "packet.h"
 
@@ -54,6 +55,17 @@ int send_buffer_write(char *data, int len)
         buffer += size;
         boundary = PACKET_BOUNDARY_NONE;
     }
+
+    packet_clear_header (packet);
+    packet_set_ctrl     (packet);
+    packet_set_type     (packet, PACKET_TYPE_ACK);
+    packet_set_timestamp(packet, 0x0000051c); /* TODO: calculate time */
+    packet_set_id       (packet, 0x08c42c74); /* TODO: generate an id */
+
+    printf("%x\n", packet.header._head0);
+
+    packet_new(&new_packet, &packet.header, NULL, 0);
+    send_packet_buffer_write(&new_packet);
 
     return retval;
 }

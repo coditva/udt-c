@@ -34,7 +34,7 @@ int packet_new(packet_t *packet, packet_header_t *header,
 
     memset(packet, 0, sizeof(packet_t));
     packet -> header = *header;
-    strcpy(packet -> data, buffer);
+    strncpy(packet -> data, buffer, len);
     packet_serialize(packet);
 
     return len;
@@ -80,7 +80,7 @@ void packet_parse(packet_t packet)
     if (packet_is_control(packet)) {                    /* control packet */
         switch (packet_get_type(packet)) {
 
-        case 0:                                 /* handshake */
+        case PACKET_TYPE_HANDSHAKE:             /* handshake */
             printf("Handshaked\n");
             if (connection.is_client) {
                 handshake_terminate();
@@ -91,72 +91,33 @@ void packet_parse(packet_t packet)
             connection.is_connected = 1;
             break;
 
-        case 1:                                 /* keep-alive */
-            header = packet.header;
-            packet_set_type(packet, PACKET_TYPE_KEEPALIVE);
-
-            packet_new(&packet, &header, NULL, 0);
-            send_packet_buffer_write(&packet);
+        case PACKET_TYPE_KEEPALIVE:             /* keep-alive */
             break;
 
-        case 2:                                 /* ack */
-            header = packet.header;
-            packet_set_type(packet, PACKET_TYPE_ACK);
-
-            packet_new(&packet, &header, NULL, 0);
-            send_packet_buffer_write(&packet);
+        case PACKET_TYPE_ACK:                   /* ack */
+            printf("acked\n");
             break;
 
-        case 3:                                 /* nak */
-            header = packet.header;
-            packet_set_type(packet, PACKET_TYPE_NAK);
-
-            packet_new(&packet, &header, NULL, 0);
-            send_packet_buffer_write(&packet);
+        case PACKET_TYPE_NAK:                   /* nak */
             break;
 
-        case 4:                                 /* congestion-delay warn */
-            header = packet.header;
-            packet_set_type(packet, PACKET_TYPE_CONGDELAY);
-
-            packet_new(&packet, &header, NULL, 0);
-            send_packet_buffer_write(&packet);
+        case PACKET_TYPE_CONGDELAY:             /* congestion-delay warn */
             break;
 
-        case 5:                                 /* shutdown */
-            header = packet.header;
-            packet_set_type(packet, PACKET_TYPE_SHUTDOWN);
-
-            packet_new(&packet, &header, NULL, 0);
-            send_packet_buffer_write(&packet);
+        case PACKET_TYPE_SHUTDOWN:              /* shutdown */
             break;
 
-        case 6:                                 /* ack of ack */
-            header = packet.header;
-            packet_set_type(packet, PACKET_TYPE_ACK2);
-
-            packet_new(&packet, &header, NULL, 0);
-            send_packet_buffer_write(&packet);
+        case PACKET_TYPE_ACK2:                  /* ack of ack */
             break;
 
-        case 7:                                 /* message drop request */
-            header = packet.header;
-            packet_set_type(packet, PACKET_TYPE_DROPREQ);
-
-            packet_new(&packet, &header, NULL, 0);
-            send_packet_buffer_write(&packet);
+        case PACKET_TYPE_DROPREQ:               /* message drop request */
             break;
 
-        case 8:                                 /* error signal */
-            header = packet.header;
-            packet_set_type(packet, PACKET_TYPE_ERRSIG);
-
-            packet_new(&packet, &header, NULL, 0);
-            send_packet_buffer_write(&packet);
+        case PACKET_TYPE_ERRSIG:                /* error signal */
             break;
 
         default:                                /* unsupported packet type */
-            printf("Unknown type: %d\n", packet_get_type(packet));
+            printf("Unknown type: %x\n", packet_get_type(packet));
             char msg[] = "Unknown packet";
             recv_buffer_write(msg, sizeof(msg));
 

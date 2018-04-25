@@ -12,15 +12,15 @@
 #define PACKET_MASK_SEQ  0x7FFFFFFF
 #define PACKET_MASK_TYPE 0x7FFF0000
 
-#define PACKET_TYPE_HANDSHAKE 0xFFFFFFFF
-#define PACKET_TYPE_KEEPALIVE 0xFFF1FFFF
-#define PACKET_TYPE_ACK       0xFFF2FFFF
-#define PACKET_TYPE_NAK       0xFFF3FFFF
-#define PACKET_TYPE_CONGDELAY 0xFFF4FFFF
-#define PACKET_TYPE_SHUTDOWN  0xFFF5FFFF
-#define PACKET_TYPE_ACK2      0xFFF6FFFF
-#define PACKET_TYPE_DROPREQ   0xFFF7FFFF
-#define PACKET_TYPE_ERRSIG    0xFFF8FFFF
+#define PACKET_TYPE_HANDSHAKE 0x00000000
+#define PACKET_TYPE_KEEPALIVE 0x00010000
+#define PACKET_TYPE_ACK       0x00020000
+#define PACKET_TYPE_NAK       0x00030000
+#define PACKET_TYPE_CONGDELAY 0x00040000
+#define PACKET_TYPE_SHUTDOWN  0x00050000
+#define PACKET_TYPE_ACK2      0x00060000
+#define PACKET_TYPE_DROPREQ   0x00070000
+#define PACKET_TYPE_ERRSIG    0x00080000
 
 #define PACKET_BOUNDARY_NONE  0
 #define PACKET_BOUNDARY_END   1
@@ -30,11 +30,14 @@
 #define packet_is_control(PACKET) \
     ((PACKET).header._head0 & PACKET_MASK_CTRL)
 
+#define packet_get_type(PACKET) \
+    ((PACKET).header._head0 & PACKET_MASK_TYPE)
+
 #define packet_clear_header(PACKET) \
-    ((PACKET).header._head0 = 0x00000000); \
-    ((PACKET).header._head1 = 0x00000000); \
-    ((PACKET).header._head2 = 0x00000000); \
-    ((PACKET).header._head3 = 0x00000000)
+    ((PACKET).header._head0 &= 0x00000000); \
+    ((PACKET).header._head1 &= 0x00000000); \
+    ((PACKET).header._head2 &= 0x00000000); \
+    ((PACKET).header._head3 &= 0x00000000)
 
 #define packet_set_data(PACKET) \
     ((PACKET).header._head0 &= 0x7FFFFFFF)
@@ -63,11 +66,9 @@
 #define packet_set_id(PACKET, PACKET_ID) \
     ((PACKET).header._head3 |= PACKET_ID)
 
-#define packet_get_type(PACKET) \
-    ((PACKET).header._head0 & PACKET_MASK_TYPE)
-
 #define packet_set_type(PACKET, PACKET_TYPE) \
-    ((PACKET).header._head0 &= (PACKET_TYPE))
+    ((PACKET).header._head0 &= 0x8000FFFF); \
+    ((PACKET).header._head0 |= (PACKET_TYPE))
 
 
 /**
