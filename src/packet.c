@@ -136,9 +136,6 @@ void packet_parse(packet_t packet)
             recv_buffer_write(packet.data, PACKET_DATA_SIZE);
         }
 
-        else if (packet.header._head1 & 0x40000000) /* last packet */
-            recv_buffer_write(packet.data, PACKET_DATA_SIZE);
-
         else if (packet.header._head1 & 0x80000000) /* first packet */
         {
             console_log_mod("%x: first\n", packet_get_seqnum(packet));
@@ -150,15 +147,28 @@ void packet_parse(packet_t packet)
         else                                        /* middle packet */
         {
             if (packet_get_order(packet)) {
-                if (last_packet == packet_get_seqnum(packet) - 1) {
-                    console_log_mod("%x: correct\n", packet_get_seqnum(packet));
-                    last_packet = packet_get_seqnum(packet);
-                    recv_buffer_write(packet.data, -1);
+                uint32_t seqnum = packet_get_seqnum(packet);
+                if (seqnum == last_packet + 1) {
+                    console_log_mod("%x: correct\n", seqnum);
+
+                    if (packet.header._head1 & 0x40000000) /* last packet */
+                        recv_buffer_write(packet.data, PACKET_DATA_SIZE);
+                    else
+                        recv_buffer_write(packet.data, -1);
+
+                    last_packet++;
                 } else {
-                    console_log_mod("%x: loss\n", packet_get_seqnum(packet));
-                    int num = last_packet;
-                    int seqnum = packet_get_seqnum(packet);
-                    while (num < seqnum) loss_list_add(num);
+                    console_log_mod("%x: loss\n", seqnum);
+                    uint32_t num = last_packet;
+                    while (num < seqnum) {
+                        packet_clear_header(packet);
+                        packet_set_ctrl(packet);
+                        packet_set_type(packet, PACKET_TYPE_NAK);
+                        packet_new(&packet, (char *) &num, sizeof(uint32_t));
+                        send_packet_buffer_write(&packet);
+                        loss_list_add(num);
+                        num++;
+                    }
                 }
             }
         }
