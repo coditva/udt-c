@@ -80,6 +80,8 @@ int main(int argc, char *argv[])
         printf("Res: %s\n", msg);
     }
 
+    printf("\nClient disconnected\n");
+
     /* close connection */
     if (udt_close(sock) == -1) {
         fprintf(stderr, "Could not close socket\n");

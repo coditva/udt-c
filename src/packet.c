@@ -1,13 +1,13 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 #include "config.h"
 #include "packet.h"
 #include "buffer.h"
 #include "core.h"
 
+extern conn_t connection;
 
 void packet_deserialize(packet_t *packet)
 {
@@ -98,6 +98,8 @@ void packet_parse(packet_t packet)
             break;
 
         case PACKET_TYPE_SHUTDOWN:              /* shutdown */
+            connection.is_open = 0;
+            connection.is_connected = 0;
             break;
 
         case PACKET_TYPE_ACK2:                  /* ack of ack */
@@ -110,9 +112,7 @@ void packet_parse(packet_t packet)
             break;
 
         default:                                /* unsupported packet type */
-            printf("Unknown type: %x\n", packet_get_type(packet));
-            char msg[] = "Unknown packet";
-            recv_buffer_write(msg, sizeof(msg));
+            recv_buffer_write("Unknown message", 16);
 
         }
     } else {                                            /* data packet */

@@ -1,9 +1,5 @@
-#include <sys/types.h>
 #include <sys/socket.h>
-#include <arpa/inet.h>
-#include <errno.h>
 #include <unistd.h>
-#include <string.h>
 
 #include "udt.h"
 #include "core.h"
@@ -38,7 +34,7 @@ int udt_bind (socket_t sock, sockaddr_t *addr, int len)
     if (result == -1) return result;
 
     connection.sock = sock;
-    connection.is_open = 0;
+    connection.is_open = 1;
     connection.addrlen = len;
     connection.is_connected = 0;
     connection.is_client = 0;
@@ -87,6 +83,9 @@ int udt_recv(socket_t sock, char *buffer, int len, int flags)
     int num_read;
 
     do {
+        if (connection.is_open == 0 && connection.is_connected == 0)
+            return 0;
+
         num_read = recv_buffer_read(buffer, len);
     } while (num_read == 0);
 
@@ -101,5 +100,7 @@ int udt_send(socket_t sock, char *buffer, int len, int flags)
 
 int udt_close(socket_t sock)
 {
+    connection_close();
+    while (connection.is_open);
     return close(sock);
 }

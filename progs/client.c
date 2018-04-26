@@ -60,10 +60,13 @@ int main(int argc, char *argv[])
 
         size = 0;
         size = getline(&line, &size, stdin);
+        if (size == 1) break;
         *(line + size - 1) = '\0';
         udt_send(sock, line, size, 0);
         free(line);
     }
+
+    printf("Disconnected\n");
 
     /* close the connection */
     udt_close(sock);

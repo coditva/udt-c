@@ -16,3 +16,15 @@ void handshake_terminate()
 {
     connection.is_connected = 1;
 }
+
+void connection_close()
+{
+    packet_t packet;
+
+    packet_clear_header (packet);
+    packet_set_ctrl     (packet);
+    packet_set_type     (packet, PACKET_TYPE_SHUTDOWN);
+
+    packet_new(&packet, NULL, 0);
+    send_packet_buffer_write(&packet);
+}

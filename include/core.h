@@ -19,4 +19,6 @@ conn_t connection;
 void    handshake_init      ();
 void    handshake_terminate ();
 
+void    connection_close    ();
+
 #endif /* end of include guard: CORE_H_7KCLGLUV */
