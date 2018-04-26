@@ -33,6 +33,12 @@
 #define packet_get_type(PACKET) \
     ((PACKET).header._head0 & PACKET_MASK_TYPE)
 
+#define packet_get_seqnum(PACKET) \
+    ((PACKET).header._head0 & PACKET_MASK_SEQ)
+
+#define packet_get_order(PACKET) \
+    ((PACKET).header._head1 & 0x20000000)
+
 #define packet_clear_header(PACKET) \
     ((PACKET).header._head0 &= 0x00000000); \
     ((PACKET).header._head1 &= 0x00000000); \

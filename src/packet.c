@@ -9,6 +9,9 @@
 #include "util.h"
 
 extern conn_t connection;
+int last_packet = 0;
+
+#define loss_list_add(NUM)
 
 void packet_deserialize(packet_t *packet)
 {
@@ -128,16 +131,37 @@ void packet_parse(packet_t packet)
 
         if (packet.header._head1 & 0x80000000 &&
             packet.header._head1 & 0x40000000)      /* solo packet */
+        {
+            console_log_mod("%x: solo\n", packet_get_seqnum(packet));
             recv_buffer_write(packet.data, PACKET_DATA_SIZE);
+        }
 
         else if (packet.header._head1 & 0x40000000) /* last packet */
             recv_buffer_write(packet.data, PACKET_DATA_SIZE);
 
         else if (packet.header._head1 & 0x80000000) /* first packet */
+        {
+            console_log_mod("%x: first\n", packet_get_seqnum(packet));
+            if (packet_get_order(packet))
+                last_packet = packet_get_seqnum(packet);
             recv_buffer_write(packet.data, -1);
+        }
 
         else                                        /* middle packet */
-            recv_buffer_write(packet.data, -1);
+        {
+            if (packet_get_order(packet)) {
+                if (last_packet == packet_get_seqnum(packet) - 1) {
+                    console_log_mod("%x: correct\n", packet_get_seqnum(packet));
+                    last_packet = packet_get_seqnum(packet);
+                    recv_buffer_write(packet.data, -1);
+                } else {
+                    console_log_mod("%x: loss\n", packet_get_seqnum(packet));
+                    int num = last_packet;
+                    int seqnum = packet_get_seqnum(packet);
+                    while (num < seqnum) loss_list_add(num);
+                }
+            }
+        }
     }
     return;
 }
