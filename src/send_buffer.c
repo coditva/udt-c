@@ -1,4 +1,5 @@
-#include <stdio.h>
+#include <unistd.h>
+
 #include "buffer.h"
 #include "packet.h"
 
@@ -65,4 +66,17 @@ int send_buffer_write(char *data, int len)
     send_packet_buffer_write(&packet);
 
     return retval;
+}
+
+int send_file_buffer_write(int fd, int offset, int size, int blocksize)
+{
+    int pos = offset;
+    packet_t packet;
+    int retval;
+
+    while (1) {
+        /* TODO: read file and create packets. */
+    }
+
+    return retval; /* TODO: calculate bytes sent and return */
 }
