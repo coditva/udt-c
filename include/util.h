@@ -2,6 +2,7 @@
 #define UTIL_H_RSWIA2KL
 
 #include <pthread.h>
+#include "config.h"
 
 #define linked_list_add(BUFFER, BLOCK) \
 { \
@@ -36,5 +37,18 @@ typedef void * (*thread_worker_t) (void *);
 
 tid_t thread_start (thread_worker_t, void *); 
 void  thread_stop  (tid_t);
+
+#ifdef DEBUG
+
+#include <stdio.h>
+#define console_log_mod(MODIFIER, LOGDATA)  printf(MODIFIER, LOGDATA)
+#define console_log(LOGDATA)                printf("%s\n", LOGDATA)
+
+#else
+
+#define console_log_mod(MODIFIER, LOGDATA)
+#define console_log(LOGDATA)
+
+#endif  /* end of DEBUG */
 
 #endif /* end of include guard: UTIL_H_RSWIA2KL */

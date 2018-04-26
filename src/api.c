@@ -22,6 +22,7 @@ socket_t udt_socket(af_type af, sock_type type, int protocol)
         errno = 5003;  /* bad params */
         return -1;
     }
+    connection.type = type;
 
     return socket(af, type, 0);
 }

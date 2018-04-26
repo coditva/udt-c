@@ -12,6 +12,7 @@ typedef struct {
     int is_open;
     int is_connected;
     int is_client;
+    int type;
 } conn_t;
 
 conn_t connection;

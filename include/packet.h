@@ -2,10 +2,10 @@
 #define PACKET_H_R7ONXCYA
 
 #include <inttypes.h>
-
+#include "config.h"
 
 #define PACKET_HEADER_SIZE 4
-#define PACKET_DATA_SIZE 200
+#define PACKET_DATA_SIZE MAX_DATA_SIZE
 
 
 #define PACKET_MASK_CTRL 0x80000000

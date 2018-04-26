@@ -6,6 +6,7 @@
 #include "packet.h"
 #include "buffer.h"
 #include "core.h"
+#include "util.h"
 
 extern conn_t connection;
 
@@ -42,10 +43,7 @@ int packet_new_handshake(packet_t *packet)
 {
     char buffer[8 * sizeof(uint32_t)];
     uint32_t *p = NULL;
-    uint32_t type = 0,
-             isn = 0,
-             mss = 0,
-             flight_flag_size = 0,
+    uint32_t flight_flag_size = 0,
              id = 0,
              req_type = 0,
              cookie = 0;
@@ -58,9 +56,9 @@ int packet_new_handshake(packet_t *packet)
 
     p = (uint32_t *) buffer;
     *p++ = UDT_VERSION;
-    *p++ = type;
-    *p++ = isn;
-    *p++ = mss;
+    *p++ = connection.type;
+    *p++ = 123123;          /* TODO: Generate random number */
+    *p++ = MAX_PACKET_SIZE;
     *p++ = flight_flag_size;
     *p++ = req_type;
     *p++ = id;
@@ -76,6 +74,7 @@ void packet_parse(packet_t packet)
         switch (packet_get_type(packet)) {
 
         case PACKET_TYPE_HANDSHAKE:             /* handshake */
+            console_log("packet: handshake");
             if (connection.is_client) {
                 handshake_terminate();
                 break;
@@ -86,36 +85,46 @@ void packet_parse(packet_t packet)
             break;
 
         case PACKET_TYPE_KEEPALIVE:             /* keep-alive */
+            console_log("packet: keep alive");
             break;
 
         case PACKET_TYPE_ACK:                   /* ack */
+            console_log("packet: ack");
             break;
 
         case PACKET_TYPE_NAK:                   /* nak */
+            console_log("packet: nak");
             break;
 
         case PACKET_TYPE_CONGDELAY:             /* congestion-delay warn */
+            console_log("packet: congestion delay");
             break;
 
         case PACKET_TYPE_SHUTDOWN:              /* shutdown */
+            console_log("packet: shutdown");
             connection.is_open = 0;
             connection.is_connected = 0;
             break;
 
         case PACKET_TYPE_ACK2:                  /* ack of ack */
+            console_log("packet: ack of ack");
             break;
 
         case PACKET_TYPE_DROPREQ:               /* message drop request */
+            console_log("packet: drop request");
             break;
 
         case PACKET_TYPE_ERRSIG:                /* error signal */
+            console_log("packet: error signal");
             break;
 
         default:                                /* unsupported packet type */
-            recv_buffer_write("Unknown message", 16);
+            console_log("packet: unknown");
 
         }
     } else {                                            /* data packet */
+
+        console_log("packet: data");
 
         if (packet.header._head1 & 0x80000000 &&
             packet.header._head1 & 0x40000000)      /* solo packet */
