@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <netdb.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "../include/udt.h"
 
@@ -69,6 +71,13 @@ int main(int argc, char *argv[])
         conn = sock;
         fprintf(stdout, "Active on %s\n", PORT);
     }
+
+    /* recv file */
+    int filefd = open("assets/recvfile", O_WRONLY | O_TRUNC | O_CREAT);
+    int64_t offset = 0;
+    if (filefd < 0) return 2;
+    if (udt_recvfile(conn, filefd, &offset, 10, 0) < 0) return 1;
+    close(filefd);
 
     /* send, recv */
     char buffer[BUFFER_SIZE];

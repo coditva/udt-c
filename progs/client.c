@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <netdb.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "../include/udt.h"
 
 #define HOST "127.0.0.1"
@@ -47,6 +49,12 @@ int main(int argc, char *argv[])
     }
 
     freeaddrinfo(result);
+
+    /* send file */
+    int filefd = open("assets/sendfile", O_RDONLY);
+    if (filefd < -1) return 2;
+    if (udt_sendfile(sock, filefd, 0, 10, 0) < 0) return 1;
+    close(filefd);
 
     /* send, recv */
     char buffer[BUFFER_SIZE];
