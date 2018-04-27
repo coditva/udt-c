@@ -76,15 +76,13 @@ int64_t send_file_buffer_write(int fd, int64_t offset, int64_t size, int64_t blo
 
     packet_t packet;
 
-    off_t pos;
     int retval;
     int seqnum;
     char buffer[PACKET_DATA_SIZE];
     int boundary;
     int len;
 
-    pos			= offset;
-    retval 		= size;
+    retval 		= 0;
     seqnum 		= 2142894844;  /* TODO: generate random number */
     boundary 	= PACKET_BOUNDARY_START;	
 
@@ -93,6 +91,8 @@ int64_t send_file_buffer_write(int fd, int64_t offset, int64_t size, int64_t blo
     while (size > 0)
     {
         len = pread(fd, buffer, PACKET_DATA_SIZE, offset);
+        if (len < 0) break;
+        retval += len;
         size -= len;
 
         boundary |= (size > 0) ? PACKET_BOUNDARY_NONE : PACKET_BOUNDARY_END;
@@ -111,7 +111,7 @@ int64_t send_file_buffer_write(int fd, int64_t offset, int64_t size, int64_t blo
 
         boundary = PACKET_BOUNDARY_NONE;
 
-        pos += blocksize;
+        offset += len;
     }
 
     packet_clear_header (packet);
@@ -123,5 +123,5 @@ int64_t send_file_buffer_write(int fd, int64_t offset, int64_t size, int64_t blo
     packet_new(&packet, NULL, 0);
     send_packet_buffer_write(&packet);
 
-    return retval; /* return total bytes sent */		
+    return retval;
 }

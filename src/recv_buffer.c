@@ -17,3 +17,9 @@ int recv_buffer_read(char *data, int len)
 {
     return buffer_read(&buffer, data, len);
 }
+
+int64_t recv_file_buffer_read(int fd, int64_t *offset, int64_t size, int64_t blocksize)
+{
+    /* TODO: implement this */
+    return 0;
+}
