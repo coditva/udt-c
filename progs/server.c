@@ -10,7 +10,7 @@
 #define BACKLOG     5
 #define HOST        "127.0.0.1"
 #define PORT        "9000"
-#define BUFFER_SIZE 1000
+#define BUFFER_SIZE 10240
 
 int main(int argc, char *argv[])
 {
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     /* send, recv */
     char buffer[BUFFER_SIZE];
     while (udt_recv(conn, buffer, BUFFER_SIZE, 0)) {
-        printf("Req: %s\n", buffer);
+        printf("\tMessage: %s\n\n", buffer);
         memset(buffer, 0, sizeof(buffer));
     }
 

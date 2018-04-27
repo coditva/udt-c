@@ -8,7 +8,7 @@
 
 #define HOST "127.0.0.1"
 #define PORT "9000"
-#define BUFFER_SIZE 1000
+#define BUFFER_SIZE 10240
 
 int main(int argc, char *argv[])
 {
@@ -59,9 +59,9 @@ int main(int argc, char *argv[])
     /* send, recv */
     size_t size;
     char *line;
-    udt_send(sock, "Client wants to talk", 21, 0);
+    udt_send(sock, "\tClient wants to talk", 22, 0);
     while (1) {
-        printf("\n>> ");
+        printf("\t\n>> ");
         size = 0;
         size = getline(&line, &size, stdin);
         if (size == 1) break;
