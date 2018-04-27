@@ -33,7 +33,7 @@ int packet_new(packet_t *packet, char *buffer, int len)
     if (len > sizeof(packet -> data)) return -1;
 
     memset(packet -> data, 0, sizeof(PACKET_DATA_SIZE));
-    strncpy(packet -> data, buffer, len);
+    memcpy(packet -> data, buffer, len);
     packet_serialize(packet);
 
     return len;
@@ -43,10 +43,10 @@ int packet_new_handshake(packet_t *packet)
 {
     char buffer[8 * sizeof(uint32_t)];
     uint32_t *p = NULL;
-    uint32_t flight_flag_size = 0,
-             id = 0,
+    uint32_t flight_flag_size = 10,
+             id = 10,
              req_type = 0,
-             cookie = 0;
+             cookie = 10;
 
     packet_clear_header (*packet);
     packet_set_ctrl     (*packet);
@@ -57,12 +57,18 @@ int packet_new_handshake(packet_t *packet)
     p = (uint32_t *) buffer;
     *p++ = UDT_VERSION;
     *p++ = connection.type;
-    *p++ = 123123;          /* TODO: Generate random number */
+    *p++ = 0x123123;          /* TODO: Generate random number */
     *p++ = MAX_PACKET_SIZE;
     *p++ = flight_flag_size;
     *p++ = req_type;
     *p++ = id;
     *p++ = cookie;
+
+    p = (uint32_t *) (packet -> data);
+    for (int i = 0; i < 8; ++i) {
+        *p = htonl(*p);
+        p++;
+    }
 
     return packet_new(packet, buffer, sizeof(buffer));
 }

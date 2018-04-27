@@ -70,8 +70,7 @@ int buffer_write_packet(buffer_t *buffer, packet_t *packet)
 
     new_block = (packet_block_t *) malloc(sizeof(packet_block_t));
     if (new_block == NULL) return -1;
-
-    new_block -> packet = *packet;
+    memcpy(&(new_block -> packet), packet, sizeof(packet_t));
 
     linked_list_add((*buffer), new_block);
     return 1;
