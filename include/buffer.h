@@ -38,11 +38,12 @@ int buffer_read_packet  (buffer_t *, packet_t *);
 
 int recv_buffer_write   (char *data, int len);
 int recv_buffer_read    (char *data, int len);
-int recv_file_buffer_read       (int, int *, int, int);
 
 int send_buffer_write           (char *data, int len);
 int send_packet_buffer_write    (packet_t *);
 int send_packet_buffer_read     (packet_t *);
-int send_file_buffer_write      (int, int, int, int);
+
+int64_t recv_file_buffer_read   (int, int64_t *, int64_t, int64_t);
+int64_t send_file_buffer_write  (int, int64_t, int64_t, int64_t);
 
 #endif /* end of include guard: BUFFER_H_IBSOFJRY */

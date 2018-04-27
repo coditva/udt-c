@@ -71,37 +71,31 @@ int send_buffer_write(char *data, int len)
     return retval;
 }
 
-int send_file_buffer_write(int fd, int offset, int size, int blocksize)
+int64_t send_file_buffer_write(int fd, int64_t offset, int64_t size, int64_t blocksize)
 {
-			
+
     packet_t packet;
 
-	off_t pos;	
+    off_t pos;
     int retval;
     int seqnum;
-	char *buffer;	
+    char buffer[PACKET_DATA_SIZE];
     int boundary;
-	int readbytescount;
-	int packet_dsize;
+    int len;
 
-	pos			= offset;
+    pos			= offset;
     retval 		= size;
     seqnum 		= 2142894844;  /* TODO: generate random number */
-    buffer 		= (char *) malloc (size);
     boundary 	= PACKET_BOUNDARY_START;	
-	
-	if (fd < 0 || pos < 0) return -1;
 
-	packet_dsize = (blocksize > PACKET_DATA_SIZE) ? PACKET_DATA_SIZE : blocksize;
-		
-	while (size > 0)
+    if (fd < 0) return -1;
+
+    while (size > 0)
     {
-		
-		lseek(fd, pos, SEEK_SET);
-		readbytescount 	 = read(fd, buffer, packet_dsize);
-		size			-= readbytescount;
+        len = pread(fd, buffer, PACKET_DATA_SIZE, offset);
+        size -= len;
 
-        boundary = boundary | (size > 0) ? PACKET_BOUNDARY_NONE : PACKET_BOUNDARY_END;
+        boundary |= (size > 0) ? PACKET_BOUNDARY_NONE : PACKET_BOUNDARY_END;
 
         packet_clear_header (packet);
         packet_set_data     (packet);
@@ -112,15 +106,15 @@ int send_file_buffer_write(int fd, int offset, int size, int blocksize)
         packet_set_timestamp(packet, 0x0000051c); /* TODO: calculate time */
         packet_set_id       (packet, 0x08c42c74); /* TODO: generate an id */
 
-        packet_new(&packet, buffer, readbytescount);
+        packet_new(&packet, buffer, len);
         send_packet_buffer_write(&packet);
 
         boundary = PACKET_BOUNDARY_NONE;
-	
-		pos += blocksize;
+
+        pos += blocksize;
     }
-		
-	packet_clear_header (packet);
+
+    packet_clear_header (packet);
     packet_set_ctrl     (packet);
     packet_set_type     (packet, PACKET_TYPE_ACK);
     packet_set_timestamp(packet, 0x0000051c); /* TODO: calculate time */
@@ -128,6 +122,6 @@ int send_file_buffer_write(int fd, int offset, int size, int blocksize)
 
     packet_new(&packet, NULL, 0);
     send_packet_buffer_write(&packet);
-				
+
     return retval; /* return total bytes sent */		
 }
