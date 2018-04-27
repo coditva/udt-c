@@ -49,9 +49,7 @@ int buffer_read(buffer_t *buffer, char *data, int len)
 
         last = block -> last;
         if (pos >= len) {
-            free(block -> data);
-            free(block);
-            continue;
+            break;
         }
 
         int n = ((len - pos) < block -> len) ? len - pos : block -> len;

@@ -43,4 +43,7 @@ int send_buffer_write           (char *data, int len);
 int send_packet_buffer_write    (packet_t *);
 int send_packet_buffer_read     (packet_t *);
 
+int64_t recv_file_buffer_read   (int, int64_t *, int64_t, int64_t);
+int64_t send_file_buffer_write  (int, int64_t, int64_t, int64_t);
+
 #endif /* end of include guard: BUFFER_H_IBSOFJRY */

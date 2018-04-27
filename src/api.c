@@ -105,3 +105,25 @@ int udt_close(socket_t sock)
     while (connection.is_open);
     return close(sock);
 }
+
+int64_t udt_recvfile(socket_t sock, int file, int64_t *offset, int64_t filesize,
+                     int blocksize)
+{
+    int num_read = 0;
+
+    do {
+        if (connection.is_open == 0 && connection.is_connected == 0)
+            return 0;
+
+        num_read = recv_file_buffer_read(file, offset, filesize, blocksize);
+    } while (num_read == 0);
+
+    return num_read;
+}
+
+int64_t udt_sendfile(socket_t sock, int file, int64_t offset, int64_t filesize,
+                     int blocksize)
+{
+    if (!connection.is_connected) return -1;
+    return send_file_buffer_write(file, offset, filesize, blocksize);
+}
