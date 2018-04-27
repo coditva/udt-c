@@ -36,6 +36,7 @@ progs/client
 
 # Temporary things
 temp/
+assets/recvfile
 
 # Tags
 tags
