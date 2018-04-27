@@ -18,7 +18,7 @@ export LD_LIBRARY_PATH=./src/:$LD_LIBRARY_PATH  # export the library path
  - [x] Implement handshake.
  - [x] Use threads for sender/receiver.
  - [x] Implement data packet handling.
- - [ ] Implement `sendfile`, `recvfile`.
+ - [x] Implement `sendfile`, `recvfile`.
  - [ ] Implement timer and use it to send various packets.
  - [ ] Make this work with an existing UDT implementation.
  - [ ] Implement a congestion control algorithm.
