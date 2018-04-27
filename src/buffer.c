@@ -45,7 +45,7 @@ int buffer_read(buffer_t *buffer, char *data, int len)
 
     while (last == 0) {
         linked_list_get((*buffer), block);
-        if (block == NULL) break;
+        if (block == NULL) continue;
 
         last = block -> last;
         if (pos >= len) {
