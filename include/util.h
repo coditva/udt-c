@@ -4,6 +4,21 @@
 #include <pthread.h>
 #include "config.h"
 
+
+#ifdef DEBUG
+
+#include <stdio.h>
+#define console_log_mod(MODIFIER, LOGDATA)  fprintf(stderr, MODIFIER, LOGDATA)
+#define console_log(LOGDATA)                fprintf(stderr, "%s\n", LOGDATA)
+
+#else
+
+#define console_log_mod(MODIFIER, LOGDATA)
+#define console_log(LOGDATA)
+
+#endif  /* end of DEBUG */
+
+
 #define linked_list_add(BUFFER, BLOCK) \
 { \
     pthread_mutex_lock(&(BUFFER.mutex)); \
@@ -37,18 +52,5 @@ typedef void * (*thread_worker_t) (void *);
 
 tid_t thread_start (thread_worker_t, void *); 
 void  thread_stop  (tid_t);
-
-#ifdef DEBUG
-
-#include <stdio.h>
-#define console_log_mod(MODIFIER, LOGDATA)  printf(MODIFIER, LOGDATA)
-#define console_log(LOGDATA)                printf("%s\n", LOGDATA)
-
-#else
-
-#define console_log_mod(MODIFIER, LOGDATA)
-#define console_log(LOGDATA)
-
-#endif  /* end of DEBUG */
 
 #endif /* end of include guard: UTIL_H_RSWIA2KL */
