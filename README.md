@@ -1,5 +1,7 @@
-# Complementary UDT Implementation
-A complementary implementation of the UDT protocol that can communicate with any existing UDT implementation to provide a custom API.
+# UDT Implementation in C
+An implementation of the **UDP-based Data Transfer (UDT)** protocol in C.
+UDT is a much faster data transfer protocol than TCP and provides a socket
+interface to send/receive data just like any other protocol.
 
 ### How to
 ```bash
@@ -29,6 +31,13 @@ progs/recvfile "file/to/get" "file/to/saveas"  # receive the file
 
 ### Bugs, suggestions
 Please report bugs, suggestions [here](https://github.com/utkarshme/udt-c/issues).
+
+
+### References
+
+- Yunhong Gu and Robert L. Grossman, UDT: UDP-based Data Transfer for High-Speed Wide Area Networks, Computer Networks (Elsevier). Volume 51, Issue 7. May 2007.
+- UDT Implementation in C++ : [http://udt.sourceforge.net/software.html](http://udt.sourceforge.net/software.html).
+- UDT Manual : [http://udt.sourceforge.net/udt4/](http://udt.sourceforge.net/udt4/).
 
 ### License
 MIT
