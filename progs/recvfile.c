@@ -50,16 +50,24 @@ int main(int argc, char *argv[])
 
     freeaddrinfo(result);
 
-    /* send, recv */
+    /* get file names */
     char reqfile[BUFFER_SIZE];
     char filename[BUFFER_SIZE];
-    printf("\n\tGet file: ");
-    scanf("%s", reqfile);
-    printf("\tSave as: ");
-    scanf("%s", filename);
+    if (argc > 0) {
+        strcpy(reqfile, argv[1]);
+    } else {
+        printf("\n\tGet file: ");
+        scanf("%s", reqfile);
+    }
+    if (argc > 1) {
+        strcpy(filename, argv[2]);
+    } else {
+        printf("\tSave as: ");
+        scanf("%s", filename);
+    }
     udt_send(sock, reqfile, strlen(reqfile), 0);
 
-    /* send file */
+    /* recv file */
     int filefd = open(filename, O_WRONLY | O_TRUNC | O_CREAT);
     int64_t offset = 0;
     if (filefd < -1) return 2;

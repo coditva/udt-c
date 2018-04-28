@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     udt_recv(conn, filename, BUFFER_SIZE, 0);
     printf("\tFilename: %s\n\n", filename);
 
-    /* recv file */
+    /* send file */
     int filefd = open(filename, O_RDONLY);
     int64_t offset = 0;
     if (filefd < 0) return 2;

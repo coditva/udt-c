@@ -8,8 +8,11 @@ make clean  # cleanup
 
 export LD_LIBRARY_PATH=./src/:$LD_LIBRARY_PATH  # export the library path
 
-./progs/server  # start the server
-./progs/client  # start the client
+progs/server  # start the server
+progs/client  # start the client
+
+progs/sendfile  # start the sendfile server
+progs/recvfile "file/to/get" "file/to/saveas"  # receive the file
 ```
 
 ### Progress
