@@ -33,6 +33,8 @@
 test/run_tests
 progs/server
 progs/client
+progs/sendfile
+progs/recvfile
 
 # Temporary things
 temp/

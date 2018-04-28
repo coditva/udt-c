@@ -2,8 +2,7 @@ CC 				= gcc
 CC_FLAGS 		= -Wall -pedantic
 CL_FLAGS		= -L../src -ludt-c -lpthread
 INC				= ../include/udt.h
-OBJS			= server.o client.o
-TARGETS			= server client
+TARGETS			= server client sendfile recvfile
 
 all				: $(TARGETS)
 
