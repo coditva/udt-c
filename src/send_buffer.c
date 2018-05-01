@@ -81,6 +81,7 @@ int64_t send_file_buffer_write(int fd, int64_t offset, int64_t size, int64_t blo
     char buffer[PACKET_DATA_SIZE];
     int boundary;
     int len;
+    int bytes_to_read;
 
     retval 		= 0;
     seqnum 		= 2142894844;  /* TODO: generate random number */
@@ -90,10 +91,16 @@ int64_t send_file_buffer_write(int fd, int64_t offset, int64_t size, int64_t blo
 
     while (size > 0)
     {
-        len = pread(fd, buffer, PACKET_DATA_SIZE, offset);
+        bytes_to_read = (size > PACKET_DATA_SIZE) ? PACKET_DATA_SIZE : size;
+        len = pread(fd, buffer, bytes_to_read, offset);
         if (len < 0) break;
         retval += len;
         size -= len;
+
+        /* if bytes read is less than the desired, then its EOF */
+        if (len < bytes_to_read) {
+            size = 0;
+        }
 
         boundary |= (size > 0) ? PACKET_BOUNDARY_NONE : PACKET_BOUNDARY_END;
 
