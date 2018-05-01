@@ -3,6 +3,8 @@ An implementation of the **UDP-based Data Transfer (UDT)** protocol in C.
 UDT is a much faster data transfer protocol than TCP and provides a socket
 interface to send/receive data just like any other protocol.
 
+The documentation can be found in the header files (see `include/udt.h`).
+
 ### How to
 ```bash
 make        # compile
