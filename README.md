@@ -1,4 +1,7 @@
 # UDT Implementation in C
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/212e3f610f6149dca8e66b0e75e97abe)](https://app.codacy.com/app/UtkarshMe/udt-c?utm_source=github.com&utm_medium=referral&utm_content=UtkarshMe/udt-c&utm_campaign=badger)
+
 An implementation of the **UDP-based Data Transfer (UDT)** protocol in C.
 UDT is a much faster data transfer protocol than TCP and provides a socket
 interface to send/receive data just like any other protocol.
