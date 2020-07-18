@@ -1,6 +1,8 @@
 TARGET			= libudt-c.so
-CC 				= gcc
-CC_FLAGS 		= -Wall -g -pedantic -shared -fPIC
+CC 				?= gcc
+CC_FLAGS		?= -Wall -pedantic
+C_FLAGS         = $(CC_FLAGS) -fPIC
+LD_FLAGS		= -shared
 INC_DIR			= ../include
 INC				= ../include/config.h \
 				  ../include/udt.h \
@@ -20,10 +22,10 @@ OBJS			= api.o \
 				  util.o
 
 $(TARGET): 		$(OBJS)
-				$(CC) $(CC_FLAGS) $(OBJS) -o $@
+				$(CC) $(C_FLAGS) $(LD_FLAGS) $(OBJS) -o $@
 
 clean:
 				rm -f *.o $(OBJS) $(TARGET)
 
 $(OBJS):%.o:	%.c $(INC) Makefile
-				$(CC) $(CC_FLAGS) -I$(INC_DIR) -c $<
+				$(CC) $(C_FLAGS) -I$(INC_DIR) -c $<

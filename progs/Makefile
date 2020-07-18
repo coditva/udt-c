@@ -1,5 +1,5 @@
-CC 				= gcc
-CC_FLAGS 		= -Wall -pedantic
+CC 				?= gcc
+CC_FLAGS 		?= -Wall -pedantic
 CL_FLAGS		= -L../src -ludt-c -lpthread
 INC				= ../include/udt.h
 TARGETS			= server client sendfile recvfile
