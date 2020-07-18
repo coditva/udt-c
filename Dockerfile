@@ -1,12 +1,14 @@
 # start with ubuntu
-FROM ubuntu
+FROM ubuntu:20.04
 
 # it me!
 LABEL maintainer="coditva@gmail.com"
 
-# install deps
+# install deps and cleanup
 RUN apt-get update && \
-    apt-get -y install gcc build-essential
+    apt-get -y install --no-install-recommends \
+        gcc build-essential && \
+    rm -rf /var/lib/apt/lists/*
 
 # setup environment
 ENV app /root/app/
