@@ -23,6 +23,12 @@ progs/sendfile  # start the sendfile server
 progs/recvfile "file/to/get" "file/to/saveas"  # receive the file
 ```
 
+##### You can also use the dockerfile!
+```bash
+docker build --tag udt .  # build the container
+docker run -it udt
+```
+
 ### Progress
  - [x] Implement architecture.
  - [x] Implement basic API.
